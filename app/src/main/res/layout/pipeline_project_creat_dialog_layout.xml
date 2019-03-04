@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#00000000">
+
+    <RelativeLayout
+        android:id="@+id/info_container"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:id="@+id/project_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="#111111"
+                android:layout_marginLeft="18dp"
+                android:textStyle="bold"
+                android:text="工程名: "/>
+
+            <EditText
+                android:hint="请输入项目名称"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:id="@+id/edit_project_name"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/project_city"
+            android:layout_below="@id/project_name">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="所在城市: "
+                android:textStyle="bold"
+                android:textColor="#111111"
+                android:textSize="15sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_project_city"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:hint="请输入所在城市"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/project_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/project_city"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginLeft="30dp"
+                android:textColor="#111111"
+                android:textStyle="bold"
+                android:text="日期: "/>
+
+            <EditText
+                android:id="@+id/edit_project_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:hint="请输入日期">
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/project_owner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/project_date">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginLeft="15dp"
+                android:textColor="#111111"
+                android:textStyle="bold"
+                android:text="负责人: "/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_project_owner"
+                android:hint="输入负责人"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:layout_marginLeft="0dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@id/info_container"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取 消"/>
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="确 定"/>
+    </LinearLayout>
+</RelativeLayout>

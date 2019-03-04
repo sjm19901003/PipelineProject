@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginTop="10dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:background="@color/listitem_divide">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="#111111"
+        android:maxLines="2"
+        android:gravity="left|center_vertical"
+        android:layout_marginLeft="20dp"
+        android:text="AD-SDF-SSS-111"/>
+
+
+    <TextView
+        android:id="@+id/city"
+        android:layout_below="@id/name"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="#111111"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:gravity="left|center_vertical"
+        android:layout_marginLeft="20dp"
+        android:text="上海"/>
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_below="@id/city"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="#111111"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_marginLeft="20dp"
+        android:text="20181010"/>
+
+    <TextView
+        android:id="@+id/owner"
+        android:layout_below="@id/date"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="#111111"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_marginLeft="20dp"
+        android:text="songjunmin"/>
+
+    <TextView
+        android:id="@+id/open"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:background="@drawable/login_head_dialog_btn_bg"
+        android:gravity="center"
+        android:text="打开工程"
+        android:textColor="#FF6633"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginRight="20dp"
+        android:layout_alignBottom="@id/owner"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/delete"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:background="#f0f0f0"
+        android:gravity="center"
+        android:text="删  除"
+        android:textColor="#111111"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>

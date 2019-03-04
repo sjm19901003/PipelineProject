@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="green">#7700ff00</color>
+    <color name="yellow">#ff7000</color>
+    <color name="black">#000000</color>
+    <color name="dark_black">#333333</color>
+    <color name="white_background">#00ffffff</color>
+    <color name="gray_background">#F7F7F7</color>
+    <color name="solid_green">#f0f0</color>
+    <color name="solid_yellow">#ffffff00</color>
+    <color name="stroke_bg">#c4c4c4</color>
+
+    <color name="listitem_divide">#ffd4d3d3</color>
+    <color name="gray">#666664</color>
+    <color name="btn_focused_color_yellow">#FDFDFD</color>
+    <color name="btn_pressed_color_light">#FDFDFD</color>
+    <color name="btn_default_color_light">#FF5F11</color>
+    <color name="rounded_container_border">#ffb7babb</color>
+    <color name="text_color_default">#000000</color>
+    <color name="text_color_pressed">#ffffff</color>
+
+    <!-- 视觉规范 字体颜色 -->
+    <color name="light_gray">#FF999999</color>
+    <color name="deep_gray">#FF333333</color>
+    <color name="font_gray">#FF878787</color>
+    <color name="light_red">#FFFF6633</color>
+    <color name="deep_black">#323232</color>
+    <color name="title_black">#111111</color>
+    <color name="text_color_network_diagnose">#446889</color>
+
+    <color name="common_bk_color">#FFF6F6F6</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="line_gray">#FFd7d7d7</color>
+    <color name="alpha_home_listview_black">#08000000</color>
+
+
+    <drawable name="title_background">#ffffff</drawable>
+
+    <color name="screenshot_dialog_shadow">#878787</color>
+    <color name="screenshot_dialog_divider">#656565</color>
+    <color name="lib_token_invalid_dialog_title_color">#111</color>
+    <color name="lib_token_invalid_dialog_content_color">#777</color>
+    <color name="lib_token_invalid_dialog_divide_color">#d7d7d7</color>
+    <color name="lib_token_invalid_dialog_cancelbtn_color">#007aff</color>
+
+
+</resources>

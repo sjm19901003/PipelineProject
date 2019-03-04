@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#00000000">
+
+    <ImageView
+        android:id="@+id/iv_award_dialog_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/login_head_award_dialog_close"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_award_dialog_content"
+        android:layout_width="232dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_award_dialog_close"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/login_head_dialog_corner_bg"
+        android:paddingLeft="17dp"
+        android:paddingRight="17dp">
+
+        <TextView
+            android:id="@+id/tv_award_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:singleLine="true"
+            android:textColor="#111"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_award_dialog_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_award_dialog_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="11dp"
+            android:maxLines="4"
+            android:textColor="#777"
+            android:textSize="13sp"/>
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="请输入密码"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/passward"
+            android:layout_below="@id/tv_award_dialog_content"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passward"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/btn_award_dialog_close"
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+
+                android:layout_marginBottom="17dp"
+                android:layout_marginTop="21dp"
+                android:background="@drawable/login_head_dialog_btn_bg"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:text="关闭"
+                android:textColor="#FF6633"
+                android:textSize="15sp"/>
+
+            <Button
+                android:id="@+id/btn_award_dialog_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:layout_marginBottom="17dp"
+                android:layout_marginTop="21dp"
+                android:background="@drawable/login_head_dialog_btn_bg"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="#FF6633"
+                android:textSize="15sp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

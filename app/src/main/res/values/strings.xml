@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">PipelineProject</string>
+    <string-array name="dlcategories">
+        <item>电力</item>
+        <item>综合管沟</item>
+        <item>雨水</item>
+        <item>通信</item>
+        <item>特殊管线</item>
+        <item>热力</item>
+        <item>燃气</item>
+        <item>排水</item>
+        <item>工业</item>
+        <item>给水</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="linecategories">
+        <item>电力</item>
+        <item>通信</item>
+        <item>给水</item>
+        <item>排水</item>
+        <item>燃气</item>
+        <item>热力</item>
+        <item>工业</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="pipematerial">
+        <item>铸铁</item>
+        <item>钢</item>
+        <item>铜</item>
+        <item>混凝土</item>
+        <item>PE</item>
+        <item>PVC</item>
+        <item>玻璃钢</item>
+        <item>球墨铸铁</item>
+        <item>光纤</item>
+        <item>砖石</item>
+        <item>石</item>
+        <item>石棉</item>
+        <item>陶瓷</item>
+        <item>铜芯铝绞线</item>
+    </string-array>
+
+    <string-array name="pipeflow">
+        <item>不确定</item>
+        <item>顺向流</item>
+        <item>逆向流</item>
+    </string-array>
+</resources>

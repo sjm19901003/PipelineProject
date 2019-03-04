@@ -1,0 +1,15 @@
+<resources>
+    <style name="Theme.TitleBarBase" parent="Theme.Base"/>
+    <style name="Theme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="colorPrimary">@color/light_red</item>-->
+        <item name="colorPrimaryDark">@color/black</item>
+        <!--<item name="colorAccent">@color/light_red</item>-->
+        <item name="android:windowBackground">@color/common_bk_color</item>
+        <item name="android:windowTitleSize">@dimen/titlebar_height</item>
+        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+
+    </style>
+
+    <style name="Theme.Pipeline" parent="Theme.Base"></style>
+
+</resources>

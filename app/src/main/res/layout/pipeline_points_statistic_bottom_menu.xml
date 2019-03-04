@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shop_more_pop_window"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pipeline_more_menu">
+
+    <LinearLayout
+        android:id="@+id/menu_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="14dp"
+        android:paddingRight="0dp">
+
+        <RelativeLayout
+            android:id="@+id/statistic"
+            android:layout_width="@dimen/apt_dip_100"
+            android:layout_height="@dimen/apt_dip_37"
+            android:paddingTop="@dimen/apt_dip_5"
+            android:paddingRight="@dimen/apt_dip_12">
+
+            <TextView
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:text="统计未测点"
+                android:textColor="@color/black"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_height="@dimen/apt_dip_1"
+                android:layout_alignParentBottom="true"
+                android:background="#E1E1E1"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/locate_unused"
+            android:layout_width="@dimen/apt_dip_100"
+            android:layout_height="@dimen/apt_dip_42"
+            android:paddingTop="@dimen/apt_dip_11"
+            android:paddingRight="@dimen/apt_dip_12">
+
+            <TextView
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="定位未测点"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/black"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_height="@dimen/apt_dip_1"
+                android:layout_alignParentBottom="true"
+                android:background="#E1E1E1"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/action"
+            android:layout_width="@dimen/apt_dip_100"
+            android:layout_height="@dimen/apt_dip_42"
+            android:paddingTop="@dimen/apt_dip_11"
+            android:paddingRight="@dimen/apt_dip_12">
+
+            <TextView
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="收  点"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/black"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_height="@dimen/apt_dip_1"
+                android:layout_alignParentBottom="true"
+                android:background="#E1E1E1"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

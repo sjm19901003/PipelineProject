@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:id="@+id/point_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/apt_dip_5"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/point_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="输入点号"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/point_desc"
+                android:layout_width="150dp"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/apt_dip_15"
+                android:hint="输入管点描述"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dl_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/feature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/apt_dip_10"
+                android:text="特征:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <Spinner
+                android:id="@+id/feature_spinner"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/apt_dip_7"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lng_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dl_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:layout_marginTop="@dimen/apt_dip_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dl_lng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="经度:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/et_lng"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="点位经度值"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="@dimen/apt_sp_13"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lat_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lng_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:layout_marginTop="@dimen/apt_dip_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dl_lat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/apt_dip_10"
+                android:text="纬度:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/et_lat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="点位纬度值"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="@dimen/apt_sp_13"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/high_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lat_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:layout_marginTop="@dimen/apt_dip_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dl_high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="高程:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/et_high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="填写点位高程"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="@dimen/apt_sp_13"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/well_depth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/high_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:layout_marginTop="@dimen/apt_dip_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/well_depth_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="井深:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/well_depth_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="填写井底深"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="@dimen/apt_sp_13"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/manhole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/well_depth"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:layout_marginTop="@dimen/apt_dip_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/manhole_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="井盖材质:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/manhole_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="填写井盖材质"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/apt_dip_10"
+                android:text="尺寸:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/manholesize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:hint="尺寸信息"
+                android:textSize="@dimen/apt_sp_13"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/other_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/manhole"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:layout_marginTop="@dimen/apt_dip_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/auxtype_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="辅助:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/auxtype_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:hint="填写辅助"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/apt_dip_10"
+                android:text="备注:"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <EditText
+                android:id="@+id/note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="填写备注"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:inputType="text"
+                android:textSize="@dimen/apt_sp_13"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/other_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/apt_dip_30"
+            android:layout_marginRight="@dimen/apt_dip_30"
+            android:layout_marginTop="@dimen/apt_dip_5"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/jpgno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="是否有相片"
+                android:textSize="@dimen/apt_sp_13"/>
+
+            <CheckBox
+                android:id="@+id/mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/apt_dip_30"
+                android:checked="false"
+                android:text="是否收点"
+                android:textSize="@dimen/apt_sp_13"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/apt_dip_15"
+        android:layout_marginTop="@dimen/apt_dip_15"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取 消"
+            android:textSize="@dimen/apt_sp_16"/>
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="确 定"
+            android:textSize="@dimen/apt_sp_16"/>
+    </LinearLayout>
+
+</RelativeLayout>
