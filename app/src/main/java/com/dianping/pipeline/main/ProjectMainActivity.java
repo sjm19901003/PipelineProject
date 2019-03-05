@@ -109,24 +109,12 @@ public class ProjectMainActivity extends BaseActivity {
             switch (type) {
                 case LINE_DELETE:
                     //移除对应的两个端点
-                    String startPtName, endPtName;
                     String[] items = polylineName.split("_");
-                    if (items != null && items.length == 3) {
-                        startPtName = items[1];
-                        endPtName = items[2];
-                    }
                     for (int i = 1; i < 2; i++) {
                         String ptName = items[i];
                         Marker marker = getMarkerWithName(ptName);
-                        PipePoint _p = getPipePointWithMarkername(ptName);
-                        try {
-                            if (_p != null && marker != null) {
-                                mPoints.remove(_p);
-                                marker.remove();
-                                mPipelineDBHelper.deletePoint(ptName);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        if (marker != null) {
+                            marker.remove();
                         }
                     }
                     try {
