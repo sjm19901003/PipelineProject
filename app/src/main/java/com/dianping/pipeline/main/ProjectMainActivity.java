@@ -88,7 +88,6 @@ public class ProjectMainActivity extends BaseActivity {
     public List<Polyline> mPolylines = new ArrayList<>();
     public List<LatLng> lintStartAndEndPoints = new ArrayList<>();
 
-    private LatLng latLng;
     private Context mContext;
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -343,9 +342,6 @@ public class ProjectMainActivity extends BaseActivity {
             mLocationClient.start();
             mLocationClient.requestLocation();
         }
-//        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(latLng);
-//        mBaiduMap.animateMapStatus(mapStatusUpdate);
-//        mBaiduMap.setMaxAndMinZoomLevel(8, 1);
         mBaiduMap.setOnMapClickListener(mMapClickListener);
         mBaiduMap.setOnPolylineClickListener(mPolylineClickListener);
         mBaiduMap.setOnMarkerClickListener(mMarkerClickListener);
@@ -991,7 +987,6 @@ public class ProjectMainActivity extends BaseActivity {
                 return;
             }
 
-            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             // 构造定位数据
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
