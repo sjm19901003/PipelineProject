@@ -53,6 +53,8 @@ import com.dianping.pipeline.widgets.ProjectMainPopupWindow;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class ProjectMainActivity extends BaseActivity {
@@ -146,6 +148,16 @@ public class ProjectMainActivity extends BaseActivity {
     private BaiduMap.OnMarkerClickListener mMarkerClickListener = new BaiduMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(final Marker marker) {
+            //添加marker的点击效果，提高UI体验
+            marker.setAlpha(0.5f);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    marker.setAlpha(1.0f);
+                }
+            }, 300);
+
             final Bundle bundle = marker.getExtraInfo();
             final String id = bundle.getString("mID");
             final String markerName = bundle.getString("mName");
