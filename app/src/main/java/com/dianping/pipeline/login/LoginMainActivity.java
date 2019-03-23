@@ -49,16 +49,9 @@ public class LoginMainActivity extends BaseActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-//                String passwords = etPasswords.getText().toString();
-//                String deviceid = ProjectUtils.getDeviceIMEI(getApplicationContext());
-
-//                if (!TextUtils.isEmpty(passwords) && (passwords.equalsIgnoreCase(deviceid.substring(0, 5)))) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("pipeline://projectlist")));
-                    dialog.dismiss();
-                    finish();
-//                }else{
-//                    Toast.makeText(getApplicationContext(), "密码不正确，请重试", Toast.LENGTH_SHORT).show();
-//                }
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("pipeline://projectlist")));
+                dialog.dismiss();
+                finish();
             }
         });
 

@@ -15,6 +15,7 @@ public class PiplineConstant {
     public enum POP_EVENT_TYPE {
         ADD_POINT,
         ADD_LINE,
+        MOVE,
         SAVE,
         NONE;
     }
@@ -23,6 +24,7 @@ public class PiplineConstant {
         CLICK_FINISH,
         POINT_DELETE,
         POINT_EDIT,
+        POINT_MOVE,
         DEFAULT
     }
 

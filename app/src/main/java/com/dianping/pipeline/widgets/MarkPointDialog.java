@@ -15,6 +15,7 @@ import com.dianping.pipeline.BaseDialog;
 import com.dianping.pipeline.R;
 import com.dianping.pipeline.model.PipePoint;
 import com.dianping.pipeline.tools.PipelineMap;
+import com.dianping.pipeline.tools.ProjectUtils;
 
 
 public class MarkPointDialog extends BaseDialog {
@@ -23,6 +24,7 @@ public class MarkPointDialog extends BaseDialog {
     private Context mContext;
     private EditText tvPointID;
     private Button btnOK, btnCancel;
+    private TextView currentGZ;
     private EditText etLng, etLati, etHigh, etDesc, etDepth, manholeValue, manholeSize, etAuxType, etNote;
     private Spinner mFeatureSpinner;
     private CheckBox jpgnoCheckBox, markCheckBox;
@@ -41,6 +43,7 @@ public class MarkPointDialog extends BaseDialog {
         btnOK = root.findViewById(R.id.btn_ok);
         btnCancel = root.findViewById(R.id.btn_cancel);
         mFeatureSpinner = root.findViewById(R.id.feature_spinner);
+        currentGZ = root.findViewById(R.id.current_gz);
         etLng = root.findViewById(R.id.et_lng);
         etLati = root.findViewById(R.id.et_lat);
         etHigh = root.findViewById(R.id.et_high);
@@ -72,9 +75,15 @@ public class MarkPointDialog extends BaseDialog {
         }
     }
 
+    public void setCurrentGZ(String gzName) {
+        if (!TextUtils.isEmpty(gzName)) {
+            currentGZ.setText("管种:" + gzName);
+        }
+    }
+
     public String getPointID() {
-        if (tvPointID != null) {
-            return tvPointID.getText().toString();
+        if (tvPointID != null && !TextUtils.isEmpty(tvPointID.getText().toString())) {
+            return ProjectUtils.stringFilter(tvPointID.getText().toString());
         }
         return null;
     }
@@ -86,36 +95,36 @@ public class MarkPointDialog extends BaseDialog {
     }
 
     public String getWellDepth() {
-        if (etDepth != null) {
-            return etDepth.getText().toString();
+        if (etDepth != null && !TextUtils.isEmpty(etDepth.getText().toString())) {
+            return ProjectUtils.stringFilter(etDepth.getText().toString());
         }
         return null;
     }
 
     public String getManholeValue() {
-        if (manholeValue != null) {
-            return manholeValue.getText().toString();
+        if (manholeValue != null && !TextUtils.isEmpty(manholeValue.getText().toString())) {
+            return ProjectUtils.stringFilter(manholeValue.getText().toString());
         }
         return null;
     }
 
     public String getManholeSize() {
-        if (manholeSize != null) {
-            return manholeSize.getText().toString();
+        if (manholeSize != null && !TextUtils.isEmpty(manholeSize.getText().toString())) {
+            return ProjectUtils.stringFilter(manholeSize.getText().toString());
         }
         return null;
     }
 
     public String getAuxType() {
-        if (etAuxType != null) {
-            return etAuxType.getText().toString();
+        if (etAuxType != null && !TextUtils.isEmpty(etAuxType.getText().toString())) {
+            return ProjectUtils.stringFilter(etAuxType.getText().toString());
         }
         return null;
     }
 
     public String getNote() {
-        if (etNote != null) {
-            return etNote.getText().toString();
+        if (etNote != null && !TextUtils.isEmpty(etNote.getText().toString())) {
+            return ProjectUtils.stringFilter(etNote.getText().toString());
         }
         return "default";
     }
@@ -168,7 +177,10 @@ public class MarkPointDialog extends BaseDialog {
     //获取管种Feature
     public String getMarkPointName() {
         if (mFeatureSpinner != null) {
-            return mFeatureSpinner.getSelectedItem().toString();
+            String itemStr = mFeatureSpinner.getSelectedItem().toString();
+            if (!TextUtils.isEmpty(itemStr)) {
+                return ProjectUtils.stringFilter(itemStr);
+            }
         }
         return "ZJD";
     }
@@ -226,7 +238,7 @@ public class MarkPointDialog extends BaseDialog {
     //获取点位描述
     public String getPointDesc() {
         if (etDesc != null && !TextUtils.isEmpty(etDesc.getText().toString())) {
-            return etDesc.getText().toString();
+            return ProjectUtils.stringFilter(etDesc.getText().toString());
         }
         return "default";
     }

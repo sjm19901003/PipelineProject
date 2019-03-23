@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -132,6 +133,8 @@ public class ProjectMainActivity extends BaseActivity {
         }
     };
 
+    private boolean isMoving = false;
+    private Marker tempMarker = null;
     private BaiduMap.OnMarkerClickListener mMarkerClickListener = new BaiduMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(final Marker marker) {
@@ -146,6 +149,9 @@ public class ProjectMainActivity extends BaseActivity {
             }, 300);
 
             final Bundle bundle = marker.getExtraInfo();
+            if (bundle == null) {
+                return false;
+            }
             final String id = bundle.getString("mID");
             final String markerName = bundle.getString("mName");
             LatLng p = marker.getPosition();
@@ -182,6 +188,12 @@ public class ProjectMainActivity extends BaseActivity {
                                 e.printStackTrace();
                             }
                         }
+                        marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.DEFAULT;
+                        break;
+                    case POINT_MOVE:
+                        isMoving = true;
+                        tempMarker = marker;
+                        clickType = PiplineConstant.POP_EVENT_TYPE.MOVE;
                         marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.DEFAULT;
                         break;
                     case POINT_DELETE:
@@ -293,7 +305,7 @@ public class ProjectMainActivity extends BaseActivity {
 
     private BaiduMap.OnMapClickListener mMapClickListener = new BaiduMap.OnMapClickListener() {
         @Override
-        public void onMapClick(LatLng lng) {
+        public void onMapClick(final LatLng lng) {
             PiplineConstant.POP_EVENT_TYPE type = clickType;
             switch (type) {
                 case ADD_POINT:
@@ -302,6 +314,30 @@ public class ProjectMainActivity extends BaseActivity {
                     break;
                 case SAVE:
                     break;
+                case MOVE:
+                    if (isMoving && tempMarker != null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Bundle bundle = tempMarker.getExtraInfo();
+                                String markName = bundle.getString("mName");
+                                if (!TextUtils.isEmpty(markName)) {
+                                    try {
+                                        PipePoint pt = getPipePointWithMarkername(markName);
+                                        pt.x = lng.longitude;
+                                        pt.y = lng.latitude;
+                                        mPipelineDBHelper.updatePoint(createContentValueWithPipePoint(pt), markName);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                        tempMarker.setPosition(lng);
+
+                        isMoving = false;
+                        tempMarker = null;
+                    }
                 default:
                     break;
             }
@@ -442,6 +478,10 @@ public class ProjectMainActivity extends BaseActivity {
                     public void run() {
                         if (!hasReStatistic) {
                             getMapPointsFromDB();
+                        }
+                        if (TextUtils.isEmpty(dialog.getPointName())) {
+                            Toast.makeText(mContext, "点名不能为空", Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         String ptName = dialog.getPointName().toUpperCase();
                         renderPointsFromDB(mBaiduMap, mPoints);
@@ -745,10 +785,10 @@ public class ProjectMainActivity extends BaseActivity {
                 .setdismissListeren(null)
                 .show();
         markPointDialog.setPointID(currentPoindID);
+        markPointDialog.setCurrentGZ(getLineType());
         markPointDialog.setLongitude(point.longitude);
         markPointDialog.setLatitude(point.latitude);
         markPointDialog.setFeatureSpinner(categoryIndex);
-
         markPointDialog.setCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -779,38 +819,65 @@ public class ProjectMainActivity extends BaseActivity {
                     }
                 }
 
+                if (!isSamePoint(markName)) {
+                    //向点表中插入点
+                    PipePoint pipePoint = new PipePoint();
+                    pipePoint.code = markPointDialog.getPointDesc();
+                    pipePoint.type = getLineType();
+                    pipePoint.feature = markPointDialog.getMarkPointName();
+                    pipePoint.name = markName;
+                    pipePoint.x = point.longitude;
+                    pipePoint.y = point.latitude;
+                    pipePoint.h = markPointDialog.getPointHeight();
+                    pipePoint.wellDepth = markPointDialog.getWellDepth();
+                    pipePoint.manHole = markPointDialog.getManholeValue();
+                    pipePoint.manHoleSize = markPointDialog.getManholeSize();
+                    pipePoint.auxType = markPointDialog.getAuxType();
+                    pipePoint.note = markPointDialog.getNote();
+                    pipePoint.jpgNo = markPointDialog.isJPGNO() ? 1 : 0;
+                    pipePoint.mark = markPointDialog.isPointMarked() ? 1 : 0;
+                    pipePoint.res = pointResName;
 
-                //向点表中插入点
-                PipePoint pipePoint = new PipePoint();
-                pipePoint.code = markPointDialog.getPointDesc();
-                pipePoint.type = getLineType();
-                pipePoint.feature = markPointDialog.getMarkPointName();
-                pipePoint.name = markName;
-                pipePoint.x = point.longitude;
-                pipePoint.y = point.latitude;
-                pipePoint.h = markPointDialog.getPointHeight();
-                pipePoint.wellDepth = markPointDialog.getWellDepth();
-                pipePoint.manHole = markPointDialog.getManholeValue();
-                pipePoint.manHoleSize = markPointDialog.getManholeSize();
-                pipePoint.auxType = markPointDialog.getAuxType();
-                pipePoint.note = markPointDialog.getNote();
-                pipePoint.jpgNo = markPointDialog.isJPGNO() ? 1 : 0;
-                pipePoint.mark = markPointDialog.isPointMarked() ? 1 : 0;
-                pipePoint.res = pointResName;
-                insertPointIntoDatabase(pipePoint);
-                mPoints.add(pipePoint);
-                currentPoindID = String.valueOf(Integer.valueOf(markName.substring(pipePoint.type.length())) + 1);
-                if (marker != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("mID", currentPoindID);
-                    bundle.putString("mName", markName);
-                    marker.setExtraInfo(bundle);
-                    mMarkers.add(marker);
+                    if (insertPointIntoDatabase(pipePoint)) {
+                        mPoints.add(pipePoint);//在内存的点集中添加一个point
+                        currentPoindID = String.valueOf(Integer.valueOf(markName.substring(pipePoint.type.length())) + 1);
+                        if (marker != null) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("mID", currentPoindID);
+                            bundle.putString("mName", markName);
+                            marker.setExtraInfo(bundle);
+                            mMarkers.add(marker);
+                        }
+                        hasReStatistic = false;
+                        markPointDialog.dismiss();
+                    } else {
+                        Toast.makeText(ProjectMainActivity.this, "插入失败", Toast.LENGTH_SHORT).show();
+                        markPointDialog.dismiss();
+                    }
                 }
-                hasReStatistic = false;
-                markPointDialog.dismiss();
+
+
             }
         });
+    }
+
+    private boolean isSamePoint(String ptName) {
+        if (mPoints == null || mPoints.size() == 0) {
+            return true;
+        }
+
+        if (TextUtils.isEmpty(ptName)) {
+            Log.e(TAG, "Check same point need ptName must not null");
+            return true;
+        }
+
+        for (PipePoint pt : mPoints) {
+            if (!TextUtils.isEmpty(pt.name) && ptName.equals(pt.name)) {
+                Toast.makeText(ProjectMainActivity.this, "插入点不允许有相同的ID，请检查", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        }
+        return false;
     }
 
     private void drawLineOnBitmap(final List<LatLng> points, final String startId, final String endId) {
@@ -887,7 +954,7 @@ public class ProjectMainActivity extends BaseActivity {
     }
 
     //将一个点数据插入到数据库的点表中
-    private void insertPointIntoDatabase(PipePoint pipePoint) {
+    private boolean insertPointIntoDatabase(PipePoint pipePoint) {
         if (mPipelineDBHelper == null) {
             mPipelineDBHelper = new PipelineDBHelper(this, mDBName, null, 1);
             mPipelineDBHelper.getWritableDatabase();
@@ -910,7 +977,10 @@ public class ProjectMainActivity extends BaseActivity {
         values.put("mark", pipePoint.mark);
         values.put("res", pipePoint.res);
 
-        mPipelineDBHelper.insertPoint(values);
+        if (mPipelineDBHelper.insertPoint(values)) {
+            return true;
+        }
+        return false;
     }
 
     //将一个线数据插入到数据库的线表中

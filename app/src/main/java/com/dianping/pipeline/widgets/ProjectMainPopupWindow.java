@@ -22,7 +22,7 @@ import com.dianping.pipeline.tools.ViewUtils;
 
 public class ProjectMainPopupWindow extends BasePopWindow {
     RelativeLayout rlPointView, rlLineView, rlExportView, rlDeleteView, rlPtStatistic;
-    RelativeLayout rlPtDelete, rlLineDelte, rlPtSearch;
+    RelativeLayout rlPtDelete, rlLineDelte, rlPtSearch, rlMvPoint;
     private ProjectMainActivity mActivity;
     private BasePopWindow ptStatisticPopWindow;
     private BaiduMap mBaiduMap;
@@ -43,6 +43,7 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlPtDelete = getContentView().findViewById(R.id.delete_point);
         rlPtSearch = getContentView().findViewById(R.id.search_point);
         rlLineDelte = getContentView().findViewById(R.id.delete_line);
+        rlMvPoint = getContentView().findViewById(R.id.move_point);
     }
 
     public void setStatisticViewName(String text) {
@@ -60,6 +61,14 @@ public class ProjectMainPopupWindow extends BasePopWindow {
             @Override
             public void onClick(View v) {
                 mActivity.marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.POINT_DELETE;
+                dismiss();
+            }
+        });
+        //移动点
+        rlMvPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.POINT_MOVE;
                 dismiss();
             }
         });

@@ -32,7 +32,7 @@
                 android:layout_height="@dimen/apt_dip_18"
                 android:scaleType="centerCrop"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/pipeline_pop_point_add"/>
+                android:src="@drawable/pipeline_pop_line_icon"/>
 
             <TextView
                 android:id="@+id/menu_add_to_ranklist"
@@ -68,7 +68,7 @@
                 android:layout_height="@dimen/apt_dip_18"
                 android:scaleType="centerCrop"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/pipeline_pop_line_icon"/>
+                android:src="@drawable/pipeline_pop_point_add"/>
 
             <TextView
                 android:id="@+id/menu_nearsearch"
@@ -104,7 +104,7 @@
                 android:layout_height="@dimen/apt_dip_18"
                 android:scaleType="centerCrop"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/pipeline_pop_save_icon"/>
+                android:src="@drawable/pipeline_icon_export"/>
 
             <TextView
                 android:id="@+id/menu_info_modify"
@@ -212,7 +212,7 @@
                 android:layout_height="@dimen/apt_dip_18"
                 android:scaleType="centerCrop"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/pipeline_line_delete"/>
+                android:src="@drawable/pipeline_pop_save_icon"/>
 
             <TextView
                 android:id="@+id/menu_delete3"
@@ -232,6 +232,43 @@
                 android:layout_alignParentBottom="true"
                 android:background="#E1E1E1"/>
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/move_point"
+            android:layout_width="@dimen/apt_dip_100"
+            android:layout_height="@dimen/apt_dip_42"
+            android:paddingTop="@dimen/apt_dip_11"
+            android:paddingRight="@dimen/apt_dip_12">
+
+            <ImageView
+                android:id="@+id/image_move"
+                android:layout_marginTop="@dimen/apt_dip_1"
+                android:layout_width="@dimen/apt_dip_18"
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_height="@dimen/apt_dip_18"
+                android:scaleType="centerCrop"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/pipeline_line_delete"/>
+
+            <TextView
+                android:id="@+id/menu_move"
+                android:layout_marginLeft="@dimen/apt_dip_8"
+                android:layout_toRightOf="@id/image_move"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="移动点"
+                android:textColor="@color/black"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="@dimen/apt_dip_3"
+                android:layout_height="@dimen/apt_dip_1"
+                android:layout_alignParentBottom="true"
+                android:background="#E1E1E1"/>
+        </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/search_point"
             android:layout_width="@dimen/apt_dip_100"

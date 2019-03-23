@@ -6,6 +6,9 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.telephony.TelephonyManager;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class ProjectUtils {
 
@@ -22,5 +25,17 @@ public class ProjectUtils {
         }
 
         return imei;
+    }
+
+    /**
+     * 过滤特殊字符
+     * @param str
+     * @return
+     */
+    public static String stringFilter (String str){
+        String regEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(str);
+        return m.replaceAll("").trim();
     }
 }

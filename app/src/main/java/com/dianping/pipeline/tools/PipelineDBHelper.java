@@ -115,16 +115,20 @@ public class PipelineDBHelper extends SQLiteOpenHelper {
     }
 
     //往数据库的点表中插入一条数据
-    public void insertPoint(ContentValues values) {
+    public boolean insertPoint(ContentValues values) {
         if (values == null) {
             Log.e(TAG, "ContentValues object is null");
-            return;
+            return false;
         }
         if (mDatabase == null) {
             mDatabase = getWritableDatabase();
         }
-        mDatabase.insert(POINT_TABLE_NAME, null, values);
-        Toast.makeText(mContext, "成功插入点", Toast.LENGTH_SHORT).show();
+
+        if (mDatabase.insert(POINT_TABLE_NAME, null, values) != -1) {
+            Toast.makeText(mContext, "成功插入点", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
     }
 
     //从数据库的点表中删除一条数据
@@ -139,7 +143,7 @@ public class PipelineDBHelper extends SQLiteOpenHelper {
         mDatabase.delete(POINT_TABLE_NAME, "_id=?", new String[]{String.valueOf(id)});
     }
 
-    public void deletePoint(String ptName) throws Exception{
+    public void deletePoint(String ptName) throws Exception {
         if (TextUtils.isEmpty(ptName)) {
             throw new Exception("name can not be null or empty.");
         }
@@ -148,20 +152,6 @@ public class PipelineDBHelper extends SQLiteOpenHelper {
             mDatabase = getWritableDatabase();
         }
         mDatabase.delete(POINT_TABLE_NAME, "name=?", new String[]{ptName});
-    }
-
-    public void updatePoint(ContentValues values, int id) throws Exception {
-        if (values == null) {
-            throw new Exception("ContentValues object is null");
-        }
-        if (id < 0) {
-            throw new Exception("id must not be zero(0).");
-        }
-
-        if (mDatabase == null) {
-            mDatabase = getWritableDatabase();
-        }
-        mDatabase.update(POINT_TABLE_NAME, values, "_id=?", new String[]{String.valueOf(id)});
     }
 
     public void updatePoint(ContentValues values, String name) throws Exception {
@@ -213,7 +203,7 @@ public class PipelineDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void updateLine(ContentValues values, int id) throws Exception{
+    public void updateLine(ContentValues values, int id) throws Exception {
         if (values == null) {
             throw new Exception("ContentValues object is null");
         }
@@ -221,11 +211,11 @@ public class PipelineDBHelper extends SQLiteOpenHelper {
             throw new Exception("id must not be zero(0).");
         }
 
-        if(mDatabase == null) {
+        if (mDatabase == null) {
             mDatabase = getWritableDatabase();
         }
 
-        mDatabase.update(LINE_TABLE_NAME, values, "_id=?",new String[]{String.valueOf(id)});
+        mDatabase.update(LINE_TABLE_NAME, values, "_id=?", new String[]{String.valueOf(id)});
     }
 
     //查询数据线表

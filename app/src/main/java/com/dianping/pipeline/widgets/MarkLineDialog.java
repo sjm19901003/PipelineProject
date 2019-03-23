@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.dianping.pipeline.BaseDialog;
 import com.dianping.pipeline.R;
+import com.dianping.pipeline.tools.ProjectUtils;
 
 
 public class MarkLineDialog extends BaseDialog {
@@ -60,71 +61,71 @@ public class MarkLineDialog extends BaseDialog {
     }
 
     public String getPipNote() {
-        if (etNote != null) {
-            return etNote.getText().toString();
+        if (etNote != null && !TextUtils.isEmpty(etNote.getText().toString())) {
+            return ProjectUtils.stringFilter(etNote.getText().toString());
         }
         return "";
     }
 
     public String getPipSpecies() {
-        if (etSpecies != null) {
-            return etSpecies.getText().toString();
+        if (etSpecies != null && !TextUtils.isEmpty(etSpecies.getText().toString())) {
+            return ProjectUtils.stringFilter(etSpecies.getText().toString());
         }
         return "";
     }
 
     public String getPipRoad() {
-        if (etRoad != null) {
-            return etRoad.getText().toString();
+        if (etRoad != null && !TextUtils.isEmpty(etRoad.getText().toString())) {
+            return ProjectUtils.stringFilter(etRoad.getText().toString());
         }
         return "";
     }
 
     public String getPipUser() {
-        if (etUser != null) {
-            return etUser.getText().toString();
+        if (etUser != null && !TextUtils.isEmpty(etUser.getText().toString())) {
+            return ProjectUtils.stringFilter(etUser.getText().toString());
         }
         return "";
     }
 
     public String getPipFlow() {
-        if (etFlow != null) {
-            return etFlow.getSelectedItem().toString();
+        if (etFlow != null && !TextUtils.isEmpty(etFlow.getSelectedItem().toString())) {
+            return ProjectUtils.stringFilter(etFlow.getSelectedItem().toString());
         }
         return "";
     }
 
     public String getPipTime() {
-        if (etBtime != null) {
-            return etBtime.getText().toString();
+        if (etBtime != null && !TextUtils.isEmpty(etBtime.getText().toString())) {
+            return ProjectUtils.stringFilter(etBtime.getText().toString());
         }
         return "20190101";
     }
 
     public String getPipEmbed() {
-        if (etEmbed != null) {
-            return etEmbed.getText().toString();
+        if (etEmbed != null && !TextUtils.isEmpty(etEmbed.getText().toString())) {
+            return ProjectUtils.stringFilter(etEmbed.getText().toString());
         }
         return "直埋";
     }
 
     public String getPipPressure() {
-        if (etPressure != null) {
-            return etPressure.getText().toString();
+        if (etPressure != null && !TextUtils.isEmpty(etPressure.getText().toString())) {
+            return ProjectUtils.stringFilter(etPressure.getText().toString());
         }
         return "";
     }
 
     public String getPipNum() {
-        if (etNum != null) {
-            return etNum.getText().toString();
+        if (etNum != null && !TextUtils.isEmpty(etNum.getText().toString())) {
+            return ProjectUtils.stringFilter(etNum.getText().toString());
         }
         return "";
     }
 
     public String getPipMatero() {
-        if (etMatero != null) {
-            return etMatero.getText().toString();
+        if (etMatero != null && !TextUtils.isEmpty(etMatero.getText().toString())) {
+            return ProjectUtils.stringFilter(etMatero.getText().toString());
         }
         return "";
     }
@@ -145,15 +146,15 @@ public class MarkLineDialog extends BaseDialog {
 
 
     public String getPipSection() {
-        if (etSection != null) {
-            return etSection.getText().toString();
+        if (etSection != null && !TextUtils.isEmpty(etSection.getText().toString())) {
+            return ProjectUtils.stringFilter(etSection.getText().toString());
         }
         return "";
     }
 
     public String getPipMaterial() {
-        if (mMaterialSpinner != null) {
-            return mMaterialSpinner.getSelectedItem().toString();
+        if (mMaterialSpinner != null && !TextUtils.isEmpty(mMaterialSpinner.getSelectedItem().toString())) {
+            return ProjectUtils.stringFilter(mMaterialSpinner.getSelectedItem().toString());
         }
         return "光纤";
     }
