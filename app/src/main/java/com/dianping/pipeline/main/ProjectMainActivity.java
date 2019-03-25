@@ -108,15 +108,15 @@ public class ProjectMainActivity extends BaseActivity {
             PiplineConstant.POLYLINE_EVENT_TYPE type = polyline_event_type;
             switch (type) {
                 case LINE_DELETE:
-                    //移除对应的两个端点
-                    String[] items = polylineName.split("_");
-                    for (int i = 1; i < 2; i++) {
-                        String ptName = items[i];
-                        Marker marker = getMarkerWithName(ptName);
-                        if (marker != null) {
-                            marker.remove();
-                        }
-                    }
+                    //不移除对应的两个端点
+//                    String[] items = polylineName.split("_");
+//                    for (int i = 1; i < 2; i++) {
+//                        String ptName = items[i];
+//                        Marker marker = getMarkerWithName(ptName);
+//                        if (marker != null) {
+//                            marker.remove();
+//                        }
+//                    }
                     try {
                         polyline.remove();
                         mPipelineDBHelper.deleteLine(polylineName);
@@ -315,12 +315,13 @@ public class ProjectMainActivity extends BaseActivity {
                 case SAVE:
                     break;
                 case MOVE:
+                    Bundle bundle = tempMarker.getExtraInfo();
+                    final String markName = bundle.getString("mName");
                     if (isMoving && tempMarker != null) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Bundle bundle = tempMarker.getExtraInfo();
-                                String markName = bundle.getString("mName");
+
                                 if (!TextUtils.isEmpty(markName)) {
                                     try {
                                         PipePoint pt = getPipePointWithMarkername(markName);
@@ -334,6 +335,13 @@ public class ProjectMainActivity extends BaseActivity {
                             }
                         });
                         tempMarker.setPosition(lng);
+                        //预先删除polyline
+                        Polyline polyline = getRelatedPolylineByMarker(tempMarker, markName);
+                        if(polyline != null){
+                            polyline.remove();
+                        }
+                        //重绘polyline
+                        refresh();
 
                         isMoving = false;
                         tempMarker = null;
@@ -348,6 +356,21 @@ public class ProjectMainActivity extends BaseActivity {
             return false;
         }
     };
+
+    private Polyline getRelatedPolylineByMarker(Marker marker, String markerName) {
+        if (marker == null || mPolylines == null || mPolylines.size() == 0) {
+            return null;
+        }
+
+        for (Polyline polyline : mPolylines) {
+            Bundle bundle = polyline.getExtraInfo();
+            String polylineName = bundle.getString("polylineID");
+            if(polylineName.contains(markerName)){
+                return polyline;
+            }
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -910,7 +933,7 @@ public class ProjectMainActivity extends BaseActivity {
                         .color(_color)
                         .points(points);
                 Polyline polyline = (Polyline) mBaiduMap.addOverlay(options);
-                String polylineName = getLineType() + "_" + startId + "_" + endId + "_";
+                String polylineName = getLineType() + "_" + startId + "_" + endId;
                 Bundle bundle = new Bundle();
                 bundle.putString("polylineID", polylineName);
                 polyline.setExtraInfo(bundle);
