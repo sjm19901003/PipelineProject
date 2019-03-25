@@ -7,6 +7,9 @@ import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -41,7 +44,6 @@ import com.dianping.pipeline.PiplineConstant;
 import com.dianping.pipeline.R;
 import com.dianping.pipeline.model.PipeLine;
 import com.dianping.pipeline.model.PipePoint;
-import com.dianping.pipeline.tools.ExcelOuputTool;
 import com.dianping.pipeline.tools.PermissionUtils;
 import com.dianping.pipeline.tools.PipelineDBHelper;
 import com.dianping.pipeline.tools.PipelineMap;
@@ -50,6 +52,8 @@ import com.dianping.pipeline.widgets.MarkLineDialog;
 import com.dianping.pipeline.widgets.MarkPointDialog;
 import com.dianping.pipeline.widgets.PointsLocateDialog;
 import com.dianping.pipeline.widgets.ProjectMainPopupWindow;
+import com.liyu.sqlitetoexcel.ExcelToSQLite;
+import com.liyu.sqlitetoexcel.SQLiteToExcel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -108,15 +112,6 @@ public class ProjectMainActivity extends BaseActivity {
             PiplineConstant.POLYLINE_EVENT_TYPE type = polyline_event_type;
             switch (type) {
                 case LINE_DELETE:
-                    //不移除对应的两个端点
-//                    String[] items = polylineName.split("_");
-//                    for (int i = 1; i < 2; i++) {
-//                        String ptName = items[i];
-//                        Marker marker = getMarkerWithName(ptName);
-//                        if (marker != null) {
-//                            marker.remove();
-//                        }
-//                    }
                     try {
                         polyline.remove();
                         mPipelineDBHelper.deleteLine(polylineName);
@@ -337,7 +332,7 @@ public class ProjectMainActivity extends BaseActivity {
                         tempMarker.setPosition(lng);
                         //预先删除polyline
                         Polyline polyline = getRelatedPolylineByMarker(tempMarker, markName);
-                        if(polyline != null){
+                        if (polyline != null) {
                             polyline.remove();
                         }
                         //重绘polyline
@@ -365,7 +360,7 @@ public class ProjectMainActivity extends BaseActivity {
         for (Polyline polyline : mPolylines) {
             Bundle bundle = polyline.getExtraInfo();
             String polylineName = bundle.getString("polylineID");
-            if(polylineName.contains(markerName)){
+            if (polylineName.contains(markerName)) {
                 return polyline;
             }
         }
@@ -540,33 +535,62 @@ public class ProjectMainActivity extends BaseActivity {
         return null;
     }
 
-    public void OuputPointsToExcel(String xlsName) {
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int what = msg.what;
+            switch (what) {
+                case EXPORT_TO_EXCEL_SUCCESS:
+                    Toast.makeText(mContext, "导出成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case EXPORT_TO_EXCEL_FAILED:
+                    Toast.makeText(mContext, "导出成功", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    private static final int START_EXPORT_TO_EXCEL = 0;
+    private static final int EXPORT_TO_EXCEL_SUCCESS = 1;
+    private static final int EXPORT_TO_EXCEL_FAILED = -1;
+
+    public void OuputDataToExcel(String xlsName) {
         if (TextUtils.isEmpty(xlsName)) {
             return;
         }
 
         File file = new File("/sdcard/pipleline/");
-        //文件夹是否已经存在
         if (!file.exists()) {
             file.mkdirs();
         }
-        String name = file.getAbsolutePath() + "/" + xlsName;
-        ExcelOuputTool.initExcel(name, PiplineConstant.pointColumnNames);
-        ExcelOuputTool.writeProjectPointsToExcel(mPoints, name, this);
-    }
 
-    public void OutputLinesToExcel(String xlsName) {
-        if (TextUtils.isEmpty(xlsName)) {
-            return;
-        }
+        new SQLiteToExcel.Builder(this)
+                .setDataBase(getDatabasePath(mDBName).getAbsolutePath())
+                .setOutputPath(file.getAbsolutePath())
+                .setOutputFileName(xlsName)
+                .start(new SQLiteToExcel.ExportListener() {
+                    @Override
+                    public void onStart() {
+                        Message msg = Message.obtain();
+                        msg.what = START_EXPORT_TO_EXCEL;
+                        mHandler.sendMessage(msg);
+                    }
 
-        File file = new File("/sdcard/pipeline");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        String name = file.getAbsolutePath() + "/" + xlsName;
-        ExcelOuputTool.initExcel(name, PiplineConstant.lineColumnNames);
-        ExcelOuputTool.writeProjectLinessToExcel(mLines, name, this);
+                    @Override
+                    public void onCompleted(String filePath) {
+                        Message msg = Message.obtain();
+                        msg.what = EXPORT_TO_EXCEL_SUCCESS;
+                        mHandler.sendMessage(msg);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Message msg = Message.obtain();
+                        msg.what = EXPORT_TO_EXCEL_FAILED;
+                        mHandler.sendMessage(msg);
+                    }
+                });
     }
 
     public void removeAllMarkers(List<Marker> markers) {

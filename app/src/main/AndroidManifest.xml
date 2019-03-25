@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.dianping.pipeline">
 
     <meta-data
@@ -40,6 +41,7 @@
         android:label="华冶·管线"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        tools:replace="android:label"
         android:theme="@style/Theme.Pipeline">
         <activity
             android:name="com.dianping.pipeline.login.LoginMainActivity"

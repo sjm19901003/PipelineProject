@@ -126,11 +126,8 @@ public class ProjectMainPopupWindow extends BasePopWindow {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        String pointsExcelName = mActivity.getDatabaseName() + "_points.xls";
-                                        mActivity.OuputPointsToExcel(pointsExcelName);
-
-                                        String linesExcelName = mActivity.getDatabaseName() + "_lines.xls";
-                                        mActivity.OutputLinesToExcel(linesExcelName);
+                                        String pointsExcelName = mActivity.getDatabaseName() + "_results.xls";
+                                        mActivity.OuputDataToExcel(pointsExcelName);
                                     }
                                 }).start();
                                 dialog.dismiss();
