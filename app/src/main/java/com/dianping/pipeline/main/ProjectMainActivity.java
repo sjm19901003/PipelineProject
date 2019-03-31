@@ -910,7 +910,7 @@ public class ProjectMainActivity extends BaseActivity {
 
     private boolean isSamePoint(String ptName) {
         if (mPoints == null || mPoints.size() == 0) {
-            return true;
+            return false;
         }
 
         if (TextUtils.isEmpty(ptName)) {

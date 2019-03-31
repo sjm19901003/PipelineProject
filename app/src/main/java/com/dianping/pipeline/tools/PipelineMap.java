@@ -29,43 +29,42 @@ public class PipelineMap {
 
     //电力
     private static final String[] ELECTRIC_POWER = {
-            "BYX", "DD", "FPD", "GD", "GJ", "JBD",
-            "KZG", "LD", "RK", "SG", "SK", "TCD",
-            "TFJ", "XHD", "YJDGD", "YLK", "ZJD"};
+            "TCD","RK","SK","JBD","LD","SG","BYX", "KZG","XHD","DD", "FPD", "GD", "GJ",
+            "TFJ",  "YJDGD", "YLK", "ZJD"};
     //通信
     private static final String[] COMMUNICATE = {
-            "ZJD", "YLK", "YJDGD", "TCD", "SXT", "SK",
-            "SG", "RK", "JXX", "JH", "JBD", "GJ", "GD",
-            "FXX", "FPD", "DHT","RK"};
+            "TCD","RK", "SK","JBD","FXX","JXX","FPD","SXT","ZJD", "YLK", "YJDGD",
+            "SG",  "JH",  "GJ", "GD",
+            "DHT"};
     //热力
     private static final String[] HEAT = {
-            "ZSQ", "TYX", "YLK", "YJBH", "PXD", "GJ",
-            "JH", "NSG", "TCD", "CD", "ZJD","WSFPXD","FPD","BJ","BC","GD","FMJ","XFM","WG"};
+            "TCD","FMJ","XFM","FPD","ZSQ", "TYX", "YLK", "YJBH", "PXD", "GJ",
+            "JH", "NSG",  "CD", "ZJD","WSFPXD","BJ","BC","GD","WG"};
     //燃气
     private static final String[] GAS = {
-            "NSG", "CD", "PXD", "WSFPXD", "FPD",
-            "BJ", "BC", "GD", "ZSQ", "GJ",
-            "FM", "YJBH", "WG", "JH", "XFM","YLK","FMJ","ZJD","TCD","TYX"};
+            "TCD","FMJ","YJBH","BJ", "BC","YLK","NSG", "CD", "PXD", "WSFPXD", "FPD",
+            "GD", "ZSQ", "GJ",
+            "FM",  "WG", "JH", "XFM","ZJD","TYX"};
     //排水
     private static final String[] DRAINAGE = {
-            "ZJD", "YSB", "YLK", "YLJ", "YJ",
-            "TCD", "PXD", "JH", "HFC", "GJ",
-            "FPD", "CSK", "AJ"};
+            "YJ","YSB","CSK",  "TCD", "YLK","ZJD",  "YLJ",
+            "PXD", "JH", "HFC", "GJ",
+            "FPD",  "AJ"};
     //工业
     private static final String[] INDUSTRY = {
-            "BC", "GD", "FMJ", "XFM", "NSG",
+            "TCD","FMJ","FPD", "BC", "GD", "XFM", "NSG",
             "TYF", "YJBH", "ZSQ", "JH", "BJ",
-            "FPD", "WSFPXD", "PXD", "CD", "WG",
-            "TCD", "ZJD", "GJ", "YLK"};
+            "WSFPXD", "PXD", "CD", "WG",
+            "ZJD", "GJ", "YLK"};
     //给水
     private static final String[] WATER_SUPPLY = {
-            "SB", "GD", "XFS", "PQF", "WSFPXD",
-            "PNF", "XFM", "FMJ", "SZGGQSQ", "BC",
+            "TCD","FMJ", "XFM","XFS","SB", "GD",  "PQF", "WSFPXD",
+            "PNF", "SZGGQSQ", "BC",
             "BJ", "FPD", "CD", "ZJD", "PXD",
-            "TCD", "WSF", "JH", "YLK", "DXXFS", "GJ",
+            "WSF", "JH", "YLK", "DXXFS", "GJ",
             "WG", "FM"};
     //其他
-    private static final String[] OTHER = {"ZJD", "TCD", "JH", "GD", "FPD", "CD"};
+    private static final String[] OTHER = { "TCD", "GD", "FPD", "ZJD", "JH", "CD"};
 
     //建立Spinner的数据源
     private static final String[][] mPOINTSCOLL = {
