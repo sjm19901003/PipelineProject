@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -175,6 +176,8 @@ public class ProjectMainActivity extends BaseActivity {
                     break;
                 case LINE_EDIT:
                 case DEFAULT:
+                    polyline.setColor(Color.BLACK);
+                    polyline.setDottedLine(true);
                     break;
             }
             return false;
@@ -258,7 +261,6 @@ public class ProjectMainActivity extends BaseActivity {
                     case POINT_EDIT:
                     case DEFAULT:
                         final int categoryIndex = getLintTypeIndex();
-                        //show dialog
                         final MarkPointDialog markPointDialog = new MarkPointDialog(mContext);
                         markPointDialog.setCancelable(true)
                                 .setdismissListeren(null)
@@ -332,7 +334,6 @@ public class ProjectMainActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //初始化当前点集数据库中的点
                 getMapPointsFromDB();
                 if (mPoints != null && mPoints.size() > 0) {
                     renderPointsFromDB(mBaiduMap, mPoints);
@@ -964,6 +965,9 @@ public class ProjectMainActivity extends BaseActivity {
             return;
         }
 
+        final Marker start = getMarkerWithName(startId);
+        final Marker end = getMarkerWithName(endId);
+
         final MarkLineDialog lineDialog = new MarkLineDialog(this);
         lineDialog.setCancelable(true)
                 .setdismissListeren(null)
@@ -999,6 +1003,26 @@ public class ProjectMainActivity extends BaseActivity {
                 clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
                 lintStartAndEndPoints.clear();
                 drawLine = false;
+
+                final PipePoint pipePoint1 = getPipePointWithMarkername(startId);
+                int markPointRes = getResIdByName(pipePoint1.mark == 1 ? "pipeline_point_ismarked" : pipePoint1.res);
+                int index = PipelineMap.getPipelineTypeIndex(PipelineMap.getPipelineCategory(pipePoint1.type));
+                Bitmap bitmap = getPointMarkerBitmapFromLayout(R.layout.pipeline_marker_layout,
+                        markPointRes,
+                        startId, index, false);
+
+                start.getIcon().getBitmap().recycle();
+                start.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+
+                final PipePoint pipePoint2 = getPipePointWithMarkername(endId);
+                int markPointRes2 = getResIdByName(pipePoint2.mark == 1 ? "pipeline_point_ismarked" : pipePoint1.res);
+                int index2 = PipelineMap.getPipelineTypeIndex(PipelineMap.getPipelineCategory(pipePoint1.type));
+                Bitmap bitmap2 = getPointMarkerBitmapFromLayout(R.layout.pipeline_marker_layout,
+                        markPointRes2,
+                        endId, index2, false);
+
+                end.getIcon().getBitmap().recycle();
+                end.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap2));
 
                 //向线表中插入线
                 PipeLine pipeLine = new PipeLine();
