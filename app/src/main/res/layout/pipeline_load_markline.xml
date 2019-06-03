@@ -270,19 +270,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="埋设类型:"
+                android:text="埋设方式:"
                 android:textSize="@dimen/apt_sp_13"/>
 
-            <EditText
+            <Spinner
                 android:id="@+id/pipe_embed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/apt_dip_5"
-                android:hint="输入埋设类型"
-                android:imeOptions="actionNext"
-                android:maxLines="1"
-                android:inputType="text"
-                android:textSize="@dimen/apt_sp_13"/>
+                android:entries="@array/pipe_under_type"/>
 
             <TextView
                 android:layout_width="wrap_content"

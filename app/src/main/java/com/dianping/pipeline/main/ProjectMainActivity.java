@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -55,7 +56,13 @@ import com.dianping.pipeline.widgets.ProjectMainPopupWindow;
 import com.liyu.sqlitetoexcel.ExcelToSQLite;
 import com.liyu.sqlitetoexcel.SQLiteToExcel;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -64,45 +71,91 @@ import java.util.TimerTask;
 
 public class ProjectMainActivity extends BaseActivity {
     private static final String TAG = "ProjectMainActivity";
+    private static final int START_EXPORT_TO_EXCEL = 0;
+    private static final int EXPORT_TO_EXCEL_SUCCESS = 1;
+    private static final int EXPORT_TO_EXCEL_FAILED = -1;
 
-
-    class MapLine {
-        public PipePoint startPoint;
-        public PipePoint endPoint;
-        public int color;
-        public String name;
-
-        public MapLine(PipePoint pt1, PipePoint pt2, int c, String _name) {
-            startPoint = pt1;
-            endPoint = pt2;
-            color = c;
-            name = _name;
-        }
-    }
+    private Context mContext;
+    private boolean isMoving = false;
+    private boolean isFirstLoc = true; // 是否首次定位
+    private String mDBName;
+    private String currentPoindID;
+    private String startPt, endPt;
+    private MapView mMapView;
+    private BaiduMap mBaiduMap;
+    private Marker tempMarker = null;
+    private LocationClient mLocationClient;
+    private ProjectMainPopupWindow mMainPopupWindow;
+    private BDLocationListener mLocationListener = new MyLocationListener();
 
     public boolean isStatisting;
     public boolean drawLine = false;
     public boolean hasReStatistic = false;
+
     public PipelineDBHelper mPipelineDBHelper;
     public PiplineConstant.POP_EVENT_TYPE clickType;
     public PiplineConstant.MARKER_EVENT_TYPE marker_event_type;
     public PiplineConstant.POLYLINE_EVENT_TYPE polyline_event_type;
+
     public List<PipeLine> mLines = new ArrayList<>();
     public List<Marker> mMarkers = new ArrayList<>();
     public List<PipePoint> mPoints = new ArrayList<>();
     public List<Polyline> mPolylines = new ArrayList<>();
     public List<LatLng> lintStartAndEndPoints = new ArrayList<>();
 
-    private Context mContext;
-    private MapView mMapView;
-    private BaiduMap mBaiduMap;
-    private String mDBName;
-    private String currentPoindID;
-    private String startPt, endPt;
-    private boolean isFirstLoc = true; // 是否首次定位
-    private LocationClient mLocationClient;
-    private ProjectMainPopupWindow mMainPopupWindow;
-    private BDLocationListener mLocationListener = new MyLocationListener();
+    private BaiduMap.OnMapClickListener mMapClickListener = new BaiduMap.OnMapClickListener() {
+        @Override
+        public void onMapClick(final LatLng lng) {
+            PiplineConstant.POP_EVENT_TYPE type = clickType;
+            switch (type) {
+                case ADD_POINT:
+                    drawPointOnBitmap(lng);
+                    clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
+                    break;
+                case SAVE:
+                    break;
+                case MOVE:
+                    Bundle bundle = tempMarker.getExtraInfo();
+                    final String markName = bundle.getString("mName");
+                    if (isMoving && tempMarker != null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (!TextUtils.isEmpty(markName)) {
+                                    try {
+                                        PipePoint pt = getPipePointWithMarkername(markName);
+                                        pt.x = lng.longitude;
+                                        pt.y = lng.latitude;
+                                        mPipelineDBHelper.updatePoint(createContentValueWithPipePoint(pt), markName);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                        tempMarker.setPosition(lng);
+                        //预先删除polyline
+                        Polyline polyline = getRelatedPolylineByMarker(tempMarker, markName);
+                        if (polyline != null) {
+                            polyline.remove();
+                        }
+                        //重绘polyline
+                        refresh();
+
+                        isMoving = false;
+                        tempMarker = null;
+                    }
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public boolean onMapPoiClick(MapPoi poi) {
+            return false;
+        }
+    };
 
     private BaiduMap.OnPolylineClickListener mPolylineClickListener = new BaiduMap.OnPolylineClickListener() {
         @Override
@@ -128,8 +181,6 @@ public class ProjectMainActivity extends BaseActivity {
         }
     };
 
-    private boolean isMoving = false;
-    private Marker tempMarker = null;
     private BaiduMap.OnMarkerClickListener mMarkerClickListener = new BaiduMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(final Marker marker) {
@@ -297,60 +348,6 @@ public class ProjectMainActivity extends BaseActivity {
             }
         });
     }
-
-    private BaiduMap.OnMapClickListener mMapClickListener = new BaiduMap.OnMapClickListener() {
-        @Override
-        public void onMapClick(final LatLng lng) {
-            PiplineConstant.POP_EVENT_TYPE type = clickType;
-            switch (type) {
-                case ADD_POINT:
-                    drawPointOnBitmap(lng);
-                    clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
-                    break;
-                case SAVE:
-                    break;
-                case MOVE:
-                    Bundle bundle = tempMarker.getExtraInfo();
-                    final String markName = bundle.getString("mName");
-                    if (isMoving && tempMarker != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                if (!TextUtils.isEmpty(markName)) {
-                                    try {
-                                        PipePoint pt = getPipePointWithMarkername(markName);
-                                        pt.x = lng.longitude;
-                                        pt.y = lng.latitude;
-                                        mPipelineDBHelper.updatePoint(createContentValueWithPipePoint(pt), markName);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                        tempMarker.setPosition(lng);
-                        //预先删除polyline
-                        Polyline polyline = getRelatedPolylineByMarker(tempMarker, markName);
-                        if (polyline != null) {
-                            polyline.remove();
-                        }
-                        //重绘polyline
-                        refresh();
-
-                        isMoving = false;
-                        tempMarker = null;
-                    }
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public boolean onMapPoiClick(MapPoi poi) {
-            return false;
-        }
-    };
 
     private Polyline getRelatedPolylineByMarker(Marker marker, String markerName) {
         if (marker == null || mPolylines == null || mPolylines.size() == 0) {
@@ -551,11 +548,7 @@ public class ProjectMainActivity extends BaseActivity {
         }
     };
 
-    private static final int START_EXPORT_TO_EXCEL = 0;
-    private static final int EXPORT_TO_EXCEL_SUCCESS = 1;
-    private static final int EXPORT_TO_EXCEL_FAILED = -1;
-
-    public void OuputDataToExcel(String xlsName) {
+    public void ouputDataToExcel(String xlsName) {
         if (TextUtils.isEmpty(xlsName)) {
             return;
         }
@@ -591,6 +584,33 @@ public class ProjectMainActivity extends BaseActivity {
                         mHandler.sendMessage(msg);
                     }
                 });
+    }
+
+    public boolean copyDatabase() {
+        String dbPath = "/data/data/com.dianping.pipeline/databases/" + mDBName;
+        File file = new File(dbPath);
+        if (file.exists()) {
+            File dbCopy = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), mDBName + ".db");
+            try {
+                BufferedInputStream in = new BufferedInputStream(new FileInputStream(dbPath));
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dbCopy));
+                byte[] bb = new byte[1024];
+                int n;
+                while ((n = in.read(bb)) != -1) {
+                    out.write(bb, 0, n);
+                }
+                out.close();
+                in.close();
+                return true;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
     }
 
     public void removeAllMarkers(List<Marker> markers) {
@@ -1099,7 +1119,6 @@ public class ProjectMainActivity extends BaseActivity {
 
     //实现BDLocationListener接口,BDLocationListener为结果监听接口，异步获取定位结果
     public class MyLocationListener implements BDLocationListener {
-
         @Override
         public void onReceiveLocation(BDLocation location) {
             if (location == null || mMapView == null) {
@@ -1143,6 +1162,20 @@ public class ProjectMainActivity extends BaseActivity {
                     Toast.makeText(ProjectMainActivity.this, "手机模式错误，请检查是否飞行", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+    }
+
+    class MapLine {
+        public PipePoint startPoint;
+        public PipePoint endPoint;
+        public int color;
+        public String name;
+
+        public MapLine(PipePoint pt1, PipePoint pt2, int c, String _name) {
+            startPoint = pt1;
+            endPoint = pt2;
+            color = c;
+            name = _name;
         }
     }
 }

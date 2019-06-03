@@ -47,4 +47,17 @@
         <item>顺向流</item>
         <item>逆向流</item>
     </string-array>
+
+    <string-array name="pipe_under_type">
+        <item>直埋</item>
+        <item>规则管块</item>
+        <item>不规则管块</item>
+        <item>非开挖</item>
+        <item>架空</item>
+        <item>圆形管沟</item>
+        <item>矩形管沟</item>
+        <item>拱形管沟</item>
+        <item>人防通道</item>
+    </string-array>
+
 </resources>

@@ -1,6 +1,7 @@
 package com.dianping.pipeline.widgets;
 
 import android.content.DialogInterface;
+import android.os.HandlerThread;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
@@ -127,7 +128,8 @@ public class ProjectMainPopupWindow extends BasePopWindow {
                                     @Override
                                     public void run() {
                                         String pointsExcelName = mActivity.getDatabaseName() + "_results.xls";
-                                        mActivity.OuputDataToExcel(pointsExcelName);
+                                        mActivity.ouputDataToExcel(pointsExcelName);
+                                        mActivity.copyDatabase();
                                     }
                                 }).start();
                                 dialog.dismiss();

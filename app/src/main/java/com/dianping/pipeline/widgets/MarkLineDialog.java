@@ -18,9 +18,9 @@ public class MarkLineDialog extends BaseDialog {
     private View root;
     private TextView startId, endId;
     private EditText startDepth, endDepth, etSection, etAmount, etHoleUse;
-    private EditText etMatero, etNum, etPressure, etEmbed, etBtime;
+    private EditText etMatero, etNum, etPressure, etBtime;
     private EditText etUser, etRoad, etSpecies, etNote;
-    private Spinner mMaterialSpinner, etFlow;
+    private Spinner mMaterialSpinner, etFlow, etEmbed;
     private Button btnOK, btnCancel;
     private int color;
 
@@ -103,9 +103,10 @@ public class MarkLineDialog extends BaseDialog {
     }
 
     public String getPipEmbed() {
-        if (etEmbed != null && !TextUtils.isEmpty(etEmbed.getText().toString())) {
-            return ProjectUtils.stringFilter(etEmbed.getText().toString());
+        if (etEmbed != null && !TextUtils.isEmpty(etEmbed.getSelectedItem().toString())) {
+            return ProjectUtils.stringFilter(etEmbed.getSelectedItem().toString());
         }
+
         return "直埋";
     }
 
