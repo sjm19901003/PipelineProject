@@ -154,6 +154,13 @@ public class PipelineDBHelper extends SQLiteOpenHelper {
         mDatabase.delete(POINT_TABLE_NAME, "name=?", new String[]{ptName});
     }
 
+    public void deleteAllPoints(){
+        if(mDatabase == null) {
+            mDatabase = getWritableDatabase();
+        }
+        mDatabase.execSQL("delete from " + POINT_TABLE_NAME);
+    }
+
     public void updatePoint(ContentValues values, String name) throws Exception {
         if (values == null) {
             throw new Exception("ContentValues object is null");

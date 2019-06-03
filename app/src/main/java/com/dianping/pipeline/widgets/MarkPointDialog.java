@@ -159,7 +159,6 @@ public class MarkPointDialog extends BaseDialog {
         return super.setCancelable(cancel);
     }
 
-
     //设置对应Category的Feature
     public void setFeatureSpinner(int index) {
         if (index < 0 || mFeatureSpinner == null) {

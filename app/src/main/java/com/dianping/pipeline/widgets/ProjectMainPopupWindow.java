@@ -164,9 +164,9 @@ public class ProjectMainPopupWindow extends BasePopWindow {
                                     public void run() {
                                         if (mActivity.mPipelineDBHelper != null) {
                                             mActivity.mPipelineDBHelper.deleteDatabase(mActivity.getApplicationContext());
-                                            mActivity.mPipelineDBHelper = null;
                                             mActivity.removeAllMarkers(mActivity.mMarkers);
                                             mActivity.removeAllPolylines(mActivity.mPolylines);
+                                            mActivity.mPipelineDBHelper = null;
                                         }
                                     }
                                 }).start();

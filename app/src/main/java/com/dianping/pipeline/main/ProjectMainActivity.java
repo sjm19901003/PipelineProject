@@ -184,24 +184,22 @@ public class ProjectMainActivity extends BaseActivity {
     private BaiduMap.OnMarkerClickListener mMarkerClickListener = new BaiduMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(final Marker marker) {
-            //添加marker的点击效果，提高UI体验
-            marker.setAlpha(0.5f);
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    marker.setAlpha(1.0f);
-                }
-            }, 300);
-
             final Bundle bundle = marker.getExtraInfo();
             if (bundle == null) {
                 return false;
             }
+            LatLng p = marker.getPosition();
             final String id = bundle.getString("mID");
             final String markerName = bundle.getString("mName");
-            LatLng p = marker.getPosition();
             final PipePoint pipePoint = getPipePointWithMarkername(markerName);
+            int markPointRes = getResIdByName(pipePoint.mark == 1 ? "pipeline_point_ismarked" : pipePoint.res);
+            int index = PipelineMap.getPipelineTypeIndex(PipelineMap.getPipelineCategory(pipePoint.type));
+            Bitmap bitmap = getPointMarkerBitmapFromLayout(R.layout.pipeline_marker_layout,
+                    markPointRes,
+                    markerName, index, true);
+
+            marker.getIcon().getBitmap().recycle();
+            marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
 
             if (drawLine) {
                 //添加第一个点击点
@@ -616,9 +614,17 @@ public class ProjectMainActivity extends BaseActivity {
     public void removeAllMarkers(List<Marker> markers) {
         if (markers != null && markers.size() > 0) {
             for (int i = 0; i < markers.size(); i++) {
-                markers.get(i).remove();
+                Marker marker = markers.get(i);
+                marker.remove();
+                try {
+                    mPipelineDBHelper.deletePoint(marker.getExtraInfo().getString("mName"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+        markers.clear();
+        currentPoindID = String.valueOf(markers.size());
     }
 
     public void removeAllPolylines(List<Polyline> polylines) {
@@ -733,7 +739,7 @@ public class ProjectMainActivity extends BaseActivity {
             Cursor pointCursor = mPipelineDBHelper.queryPoint();
             int dataCount = pointCursor.getCount();
             if (dataCount == 0) {
-                currentPoindID = "1";
+                currentPoindID = "0";
             } else {
                 while (pointCursor.moveToNext()) {
                     PipePoint p = new PipePoint();
@@ -829,6 +835,10 @@ public class ProjectMainActivity extends BaseActivity {
     }
 
     private Bitmap getPointMarkerBitmapFromLayout(int layout, int markerRes, String name, int categoryIndex) {
+        return getPointMarkerBitmapFromLayout(layout, markerRes, name, categoryIndex, false);
+    }
+
+    private Bitmap getPointMarkerBitmapFromLayout(int layout, int markerRes, String name, int categoryIndex, boolean show) {
         View view = LayoutInflater.from(ProjectMainActivity.this).inflate(layout, null);
         if (view != null) {
             TextView tvName = view.findViewById(R.id.marker_id);
@@ -836,6 +846,7 @@ public class ProjectMainActivity extends BaseActivity {
             tvName.setTextColor(PipelineMap.getPipelineColor(categoryIndex));
             ImageView res = view.findViewById(R.id.marker_res);
             res.setImageResource(markerRes);
+            view.findViewById(R.id.marker_des_checked).setVisibility(show ? View.VISIBLE : View.GONE);
             int me = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
             view.measure(me, me);
             view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
@@ -853,7 +864,7 @@ public class ProjectMainActivity extends BaseActivity {
         markPointDialog.setCancelable(true)
                 .setdismissListeren(null)
                 .show();
-        markPointDialog.setPointID(currentPoindID);
+        markPointDialog.setPointID(String.valueOf(Integer.valueOf(currentPoindID) + 1));
         markPointDialog.setCurrentGZ(getLineType());
         markPointDialog.setLongitude(point.longitude);
         markPointDialog.setLatitude(point.latitude);
@@ -873,22 +884,19 @@ public class ProjectMainActivity extends BaseActivity {
                 String pointName = markPointDialog.getMarkPointName();
                 String pointResName = "pipeline_" + (categoryPrefix + "_" + pointName).toLowerCase();
                 int markPointRes = getResIdByName(pointResName);
-                //从layout解析出bitmap作为BitmapDescriptor
-                Marker marker = null;
                 String markName = getLineType() + markPointDialog.getPointID() + "";
-                Bitmap bitmap = getPointMarkerBitmapFromLayout(R.layout.pipeline_marker_layout, markPointRes, markName, categoryIndex);
-                if (bitmap != null) {
-                    BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
-                    if (descriptor != null) {
-                        OverlayOptions option = new MarkerOptions()
-                                .position(point)
-                                .icon(descriptor)
-                                .draggable(true);
-                        marker = (Marker) mBaiduMap.addOverlay(option);
-                    }
-                }
 
                 if (!isSamePoint(markName)) {
+                    Marker marker = null;
+                    Bitmap bitmap = getPointMarkerBitmapFromLayout(R.layout.pipeline_marker_layout, markPointRes, markName, categoryIndex);
+                    if (bitmap != null) {
+                        BitmapDescriptor descriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+                        OverlayOptions option = new MarkerOptions()
+                                .position(point)
+                                .draggable(true)
+                                .icon(descriptor);
+                        marker = (Marker) mBaiduMap.addOverlay(option);
+                    }
                     //向点表中插入点
                     PipePoint pipePoint = new PipePoint();
                     pipePoint.code = markPointDialog.getPointDesc();
@@ -909,7 +917,7 @@ public class ProjectMainActivity extends BaseActivity {
 
                     if (insertPointIntoDatabase(pipePoint)) {
                         mPoints.add(pipePoint);//在内存的点集中添加一个point
-                        currentPoindID = String.valueOf(Integer.valueOf(markName.substring(pipePoint.type.length())) + 1);
+//                        currentPoindID = String.valueOf(Integer.valueOf(markName.substring(pipePoint.type.length())) + 1);
                         if (marker != null) {
                             Bundle bundle = new Bundle();
                             bundle.putString("mID", currentPoindID);
@@ -918,6 +926,7 @@ public class ProjectMainActivity extends BaseActivity {
                             mMarkers.add(marker);
                         }
                         hasReStatistic = false;
+                        currentPoindID = markPointDialog.getPointID();
                         markPointDialog.dismiss();
                     } else {
                         Toast.makeText(ProjectMainActivity.this, "插入失败", Toast.LENGTH_SHORT).show();
@@ -978,6 +987,7 @@ public class ProjectMainActivity extends BaseActivity {
                         .width(3)
                         .color(_color)
                         .points(points);
+
                 Polyline polyline = (Polyline) mBaiduMap.addOverlay(options);
                 String polylineName = getLineType() + "_" + startId + "_" + endId;
                 Bundle bundle = new Bundle();

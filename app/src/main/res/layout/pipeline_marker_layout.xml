@@ -1,21 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="20dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/pipeline_simple_marker_selected"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/apt_sp_10"
-        android:textColor="#111111"
-        android:id="@+id/marker_id"/>
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/apt_dip_3"
+    android:paddingTop="@dimen/apt_dip_2"
+    android:paddingRight="@dimen/apt_dip_3"
+    android:paddingBottom="@dimen/apt_dip_2">
 
     <ImageView
+        android:id="@+id/marker_des_checked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:id="@+id/marker_res"/>
+        android:visibility="gone"
+        android:src="@drawable/pipeline_point_ismarked"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/marker_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#111111"
+            android:textSize="@dimen/apt_sp_8"/>
+
+        <ImageView
+            android:id="@+id/marker_res"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/apt_dip_1"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/apt_dip_3"
+            android:scaleType="fitXY"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="@dimen/apt_dip_3"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/common_location_marker"/>
+
 </LinearLayout>

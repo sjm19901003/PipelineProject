@@ -3,7 +3,7 @@
 
     <!--<solid android:color="#FFF" />-->
 
-    <corners android:radius="@dimen/apt_dip_51" />
+    <corners android:radius="@dimen/apt_dip_10" />
 
     <stroke
         android:width="@dimen/apt_px_1"
