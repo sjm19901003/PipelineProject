@@ -23,53 +23,59 @@ public class LoginMainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pipeline_login_main_layout);
+        if (!TextUtils.isEmpty(preferences().getString("project_password", ""))) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("pipeline://projectlist")));
+            finish();
+        } else {
+            setContentView(R.layout.pipeline_login_main_layout);
 
-        final Dialog dialog = new Dialog(this);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.pipeline_project_login_dialog_layout);
+            final Dialog dialog = new Dialog(this);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setContentView(R.layout.pipeline_project_login_dialog_layout);
 
-        TextView textView = dialog.findViewById(R.id.tv_award_dialog_content);
-        TextView titleView = dialog.findViewById(R.id.tv_award_dialog_title);
-        final EditText etPasswords = dialog.findViewById(R.id.passward);
-        titleView.setText("登录验证");
-        textView.setText("请输入相关信息来验证信息，验证通过方可使用该软件");
-        dialog.findViewById(R.id.iv_award_dialog_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        dialog.findViewById(R.id.btn_award_dialog_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        dialog.findViewById(R.id.btn_award_dialog_ok).setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                showSystemParameter();
-                String password = etPasswords.getText().toString();
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(LoginMainActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (password.equals(ProjectUtils.getSystemVersion())) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("pipeline://projectlist")));
+            TextView textView = dialog.findViewById(R.id.tv_award_dialog_content);
+            TextView titleView = dialog.findViewById(R.id.tv_award_dialog_title);
+            final EditText etPasswords = dialog.findViewById(R.id.passward);
+            titleView.setText("登录验证");
+            textView.setText("请输入相关信息来验证信息，验证通过方可使用该软件");
+            dialog.findViewById(R.id.iv_award_dialog_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     dialog.dismiss();
                     finish();
-                } else {
-                    Toast.makeText(LoginMainActivity.this, "密码不正确", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+            dialog.findViewById(R.id.btn_award_dialog_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            dialog.findViewById(R.id.btn_award_dialog_ok).setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
+                @Override
+                public void onClick(View v) {
+                    showSystemParameter();
+                    String password = etPasswords.getText().toString();
+                    if (TextUtils.isEmpty(password)) {
+                        Toast.makeText(LoginMainActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (password.equals(ProjectUtils.getSystemVersion())) {
+                        preferences().edit().putString("project_password", password).apply();
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("pipeline://projectlist")));
+                        dialog.dismiss();
+                        finish();
+                    } else {
+                        Toast.makeText(LoginMainActivity.this, "密码不正确", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.show();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.show();
+        }
     }
 
     private void showSystemParameter() {

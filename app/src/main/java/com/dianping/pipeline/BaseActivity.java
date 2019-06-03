@@ -1,5 +1,7 @@
 package com.dianping.pipeline;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +25,15 @@ public class BaseActivity extends AppCompatActivity {
     private Spinner lineTypeSp;
     private TextView delete;
     private TextView back;
+    private static SharedPreferences prefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.pipeline_base_layout);
         initBaseView();
+        prefs = preferences(getApplicationContext());
+        getResources().getDisplayMetrics();
     }
 
     @Override
@@ -56,6 +61,21 @@ public class BaseActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    public static SharedPreferences preferences(Context context) {
+        if (context == null) {
+            context = PipelineProjectApplication.instance();
+        }
+
+        return context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
+    }
+
+    public static SharedPreferences preferences() {
+        if (prefs == null) {
+            prefs = preferences(PipelineProjectApplication.instance());
+
+        }
+        return prefs;
+    }
 
     public void setContentView(int layoutResID) {
         View contentView = getLayoutInflater().inflate(layoutResID, null);

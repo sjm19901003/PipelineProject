@@ -699,6 +699,7 @@ public class ProjectMainActivity extends BaseActivity {
                 MapLine l = new MapLine(pt1, pt2, color, name);
                 lines.add(l);
             }
+            cursor.close();
         }
         return lines;
     }
@@ -739,6 +740,7 @@ public class ProjectMainActivity extends BaseActivity {
                     mPoints.add(p);
                 }
             }
+            pointCursor.close();
         }
         hasReStatistic = true;
         return mPoints;

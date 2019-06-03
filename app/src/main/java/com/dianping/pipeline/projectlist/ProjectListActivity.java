@@ -97,6 +97,7 @@ public class ProjectListActivity extends BaseActivity {
                 ProjectListItemModel model = new ProjectListItemModel(name, city, date, owner);
                 mListItemModels.add(model);
             }
+            cursor.close();
         }
     }
 
