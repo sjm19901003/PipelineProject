@@ -176,8 +176,21 @@ public class ProjectMainActivity extends BaseActivity {
                     break;
                 case LINE_EDIT:
                 case DEFAULT:
-                    polyline.setColor(Color.BLACK);
-                    polyline.setDottedLine(true);
+                    final MarkLineDialog markLineDialog = new MarkLineDialog(mContext);
+                    markLineDialog.setCancelable(true)
+                            .setdismissListeren(null)
+                            .show();
+                    markLineDialog.setCancelClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            markLineDialog.dismiss();
+                        }
+                    }).setOKClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
                     break;
             }
             return false;
@@ -744,7 +757,6 @@ public class ProjectMainActivity extends BaseActivity {
             } else {
                 while (pointCursor.moveToNext()) {
                     PipePoint p = new PipePoint();
-
                     p.x = pointCursor.getDouble(pointCursor.getColumnIndex("x"));
                     p.y = pointCursor.getDouble(pointCursor.getColumnIndex("y"));
                     p.h = pointCursor.getDouble(pointCursor.getColumnIndex("h"));

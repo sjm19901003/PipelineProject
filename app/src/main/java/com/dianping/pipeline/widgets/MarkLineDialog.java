@@ -216,4 +216,9 @@ public class MarkLineDialog extends BaseDialog {
         return this;
     }
 
+    public void setContentValue(){
+
+    }
+
+
 }

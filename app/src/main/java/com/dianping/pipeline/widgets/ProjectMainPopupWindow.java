@@ -17,6 +17,8 @@ import com.dianping.pipeline.R;
 import com.dianping.pipeline.main.ProjectMainActivity;
 import com.dianping.pipeline.tools.ViewUtils;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by songjunmin on 2019/1/12.
  */
@@ -24,13 +26,13 @@ import com.dianping.pipeline.tools.ViewUtils;
 public class ProjectMainPopupWindow extends BasePopWindow {
     RelativeLayout rlPointView, rlLineView, rlExportView, rlDeleteView, rlPtStatistic;
     RelativeLayout rlPtDelete, rlLineDelte, rlPtSearch, rlMvPoint;
-    private ProjectMainActivity mActivity;
+    private WeakReference<ProjectMainActivity> mActivity;
     private BasePopWindow ptStatisticPopWindow;
     private BaiduMap mBaiduMap;
 
     public ProjectMainPopupWindow(BaseActivity activity, BaiduMap baiduMap) {
         super(activity, R.layout.pipeline_project_main_pop_menu, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mActivity = (ProjectMainActivity) activity;
+        mActivity = new WeakReference<>((ProjectMainActivity) activity);
         mBaiduMap = baiduMap;
     }
 
@@ -61,7 +63,7 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlPtDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.POINT_DELETE;
+                mActivity.get().marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.POINT_DELETE;
                 dismiss();
             }
         });
@@ -69,7 +71,7 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlMvPoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.POINT_MOVE;
+                mActivity.get().marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.POINT_MOVE;
                 dismiss();
             }
         });
@@ -77,7 +79,7 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlLineDelte.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.polyline_event_type = PiplineConstant.POLYLINE_EVENT_TYPE.LINE_DELETE;
+                mActivity.get().polyline_event_type = PiplineConstant.POLYLINE_EVENT_TYPE.LINE_DELETE;
                 dismiss();
             }
         });
@@ -85,7 +87,7 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlPtSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.searchMarker();
+                mActivity.get().searchMarker();
                 dismiss();
             }
         });
@@ -93,8 +95,8 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlPointView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.clickType = PiplineConstant.POP_EVENT_TYPE.ADD_POINT;
-                mActivity.drawLine = false;
+                mActivity.get().clickType = PiplineConstant.POP_EVENT_TYPE.ADD_POINT;
+                mActivity.get().drawLine = false;
                 dismiss();
             }
         });
@@ -102,10 +104,10 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlLineView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.clickType = PiplineConstant.POP_EVENT_TYPE.ADD_LINE;
-                mActivity.drawLine = true;
-                if (mActivity.lintStartAndEndPoints != null) {
-                    mActivity.lintStartAndEndPoints.clear();
+                mActivity.get().clickType = PiplineConstant.POP_EVENT_TYPE.ADD_LINE;
+                mActivity.get().drawLine = true;
+                if (mActivity.get().lintStartAndEndPoints != null) {
+                    mActivity.get().lintStartAndEndPoints.clear();
                 }
                 dismiss();
             }
@@ -114,10 +116,10 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlExportView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
-                mActivity.drawLine = false;
+                mActivity.get().clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
+                mActivity.get().drawLine = false;
                 dismiss();
-                AlertDialog alertDialog = new AlertDialog.Builder(mActivity)
+                AlertDialog alertDialog = new AlertDialog.Builder(mActivity.get())
                         .setTitle("导 出")
                         .setMessage("确认导出数据表到手机？")
                         .setIcon(R.drawable.ic_launcher_foreground)
@@ -127,9 +129,9 @@ public class ProjectMainPopupWindow extends BasePopWindow {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        String pointsExcelName = mActivity.getDatabaseName() + "_results.xls";
-                                        mActivity.ouputDataToExcel(pointsExcelName);
-                                        mActivity.copyDatabase();
+                                        String pointsExcelName = mActivity.get().getDatabaseName() + "_results.xls";
+                                        mActivity.get().ouputDataToExcel(pointsExcelName);
+                                        mActivity.get().copyDatabase();
                                     }
                                 }).start();
                                 dialog.dismiss();
@@ -148,11 +150,11 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlDeleteView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
-                mActivity.drawLine = false;
+                mActivity.get().clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
+                mActivity.get().drawLine = false;
                 dismiss();
 
-                AlertDialog alertDialog = new AlertDialog.Builder(mActivity)
+                AlertDialog alertDialog = new AlertDialog.Builder(mActivity.get())
                         .setTitle("一键删除")
                         .setMessage("确认删除所有的点、线数据？此操作会清空所有数据表的内容。")
                         .setIcon(R.drawable.ic_launcher_foreground)
@@ -162,11 +164,11 @@ public class ProjectMainPopupWindow extends BasePopWindow {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (mActivity.mPipelineDBHelper != null) {
-                                            mActivity.mPipelineDBHelper.deleteDatabase(mActivity.getApplicationContext());
-                                            mActivity.removeAllMarkers(mActivity.mMarkers);
-                                            mActivity.removeAllPolylines(mActivity.mPolylines);
-                                            mActivity.mPipelineDBHelper = null;
+                                        if (mActivity.get().mPipelineDBHelper != null) {
+                                            mActivity.get().mPipelineDBHelper.deleteDatabase(mActivity.get().getApplicationContext());
+                                            mActivity.get().removeAllMarkers(mActivity.get().mMarkers);
+                                            mActivity.get().removeAllPolylines(mActivity.get().mPolylines);
+                                            mActivity.get().mPipelineDBHelper = null;
                                         }
                                     }
                                 }).start();
@@ -186,19 +188,19 @@ public class ProjectMainPopupWindow extends BasePopWindow {
         rlPtStatistic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActivity.drawLine = false;
-                if (!mActivity.isStatisting) {
-                    mActivity.clickType = PiplineConstant.POP_EVENT_TYPE.SAVE;
+                mActivity.get().drawLine = false;
+                if (!mActivity.get().isStatisting) {
+                    mActivity.get().clickType = PiplineConstant.POP_EVENT_TYPE.SAVE;
                     //同时在返回键的下方展示收点相关的popwindow
                     showStatisticPopWindow();
-                    mActivity.isStatisting = true;
+                    mActivity.get().isStatisting = true;
                 } else {
-                    mActivity.clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
-                    mActivity.isStatisting = false;
+                    mActivity.get().clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
+                    mActivity.get().isStatisting = false;
                     ptStatisticPopWindow.setDisapperOutside(true);
                     ptStatisticPopWindow.dismiss();
                     ptStatisticPopWindow = null;
-                    mActivity.marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.DEFAULT;
+                    mActivity.get().marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.DEFAULT;
                 }
                 dismiss();
             }
@@ -208,7 +210,7 @@ public class ProjectMainPopupWindow extends BasePopWindow {
     //收点相关操作的弹窗
     private void showStatisticPopWindow() {
         if (ptStatisticPopWindow == null) {
-            ptStatisticPopWindow = new BasePopWindow(mActivity,
+            ptStatisticPopWindow = new BasePopWindow(mActivity.get(),
                     R.layout.pipeline_points_statistic_bottom_menu,
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) {
                 RelativeLayout statistic, locate_unused, action;
@@ -225,32 +227,32 @@ public class ProjectMainPopupWindow extends BasePopWindow {
                     statistic.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final PointsStatisticDialog dialog = new PointsStatisticDialog(mActivity);
+                            final PointsStatisticDialog dialog = new PointsStatisticDialog(mActivity.get());
 
-                            mActivity.runOnUiThread(new Runnable() {
+                            mActivity.get().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!mActivity.hasReStatistic) {
-                                        mActivity.getMapPointsFromDB();
+                                    if (!mActivity.get().hasReStatistic) {
+                                        mActivity.get().getMapPointsFromDB();
                                     }
                                     int unfinished = 0;
                                     StringBuilder stringBuilder = new StringBuilder();
-                                    if (mActivity.mPoints.size() > 0) {
-                                        for (int i = 0; i < mActivity.mPoints.size(); i++) {
-                                            if (!(mActivity.mPoints.get(i).mark == 1)) {
+                                    if (mActivity.get().mPoints.size() > 0) {
+                                        for (int i = 0; i < mActivity.get().mPoints.size(); i++) {
+                                            if (!(mActivity.get().mPoints.get(i).mark == 1)) {
                                                 unfinished++;
-                                                stringBuilder.append(mActivity.mPoints.get(i).name + " ");
+                                                stringBuilder.append(mActivity.get().mPoints.get(i).name + " ");
                                             }
                                         }
                                     }
 
-                                    mActivity.renderPointsFromDB(mBaiduMap, mActivity.mPoints);
-                                    dialog.setTotalPoints(mActivity.mPoints.size());
+                                    mActivity.get().renderPointsFromDB(mBaiduMap, mActivity.get().mPoints);
+                                    dialog.setTotalPoints(mActivity.get().mPoints.size());
                                     dialog.setUnFininshedPoints(unfinished);
                                     dialog.setUnFinishedDesc(stringBuilder.toString());
                                 }
                             });
-                            mActivity.clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
+                            mActivity.get().clickType = PiplineConstant.POP_EVENT_TYPE.NONE;
                             dialog.show();
                         }
                     });
@@ -259,24 +261,24 @@ public class ProjectMainPopupWindow extends BasePopWindow {
                     locate_unused.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mActivity.searchMarker();
+                            mActivity.get().searchMarker();
                         }
                     });
 
                     action.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mActivity.marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.CLICK_FINISH;//进行收点
+                            mActivity.get().marker_event_type = PiplineConstant.MARKER_EVENT_TYPE.CLICK_FINISH;//进行收点
                         }
                     });
                 }
             };
             ptStatisticPopWindow.setDisapperOutside(false);
             BasePopWindow.LayoutGravity layoutGravity = new BasePopWindow.LayoutGravity(BasePopWindow.LayoutGravity.CENTER_HORI | BasePopWindow.LayoutGravity.TO_BOTTOM);
-            if (mActivity.getTitleBarBackView() != null) {
-                ptStatisticPopWindow.showBashOfAnchor(mActivity.getTitleBarBackView(), layoutGravity,
-                        -ViewUtils.dip2px(mActivity.getApplicationContext(), 50),
-                        -ViewUtils.dip2px(mActivity.getApplicationContext(), 10));
+            if (mActivity.get().getTitleBarBackView() != null) {
+                ptStatisticPopWindow.showBashOfAnchor(mActivity.get().getTitleBarBackView(), layoutGravity,
+                        -ViewUtils.dip2px(mActivity.get().getApplicationContext(), 50),
+                        -ViewUtils.dip2px(mActivity.get().getApplicationContext(), 10));
             }
         }
     }
