@@ -2,6 +2,7 @@ package com.dianping.pipeline.widgets;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -11,10 +12,12 @@ import android.widget.TextView;
 
 import com.dianping.pipeline.BaseDialog;
 import com.dianping.pipeline.R;
+import com.dianping.pipeline.model.PipeLine;
 import com.dianping.pipeline.tools.ProjectUtils;
 
 
 public class MarkLineDialog extends BaseDialog {
+    private static final String TAG = "MarkLineDialog";
     private View root;
     private TextView startId, endId;
     private EditText startDepth, endDepth, etSection, etAmount, etHoleUse;
@@ -54,6 +57,29 @@ public class MarkLineDialog extends BaseDialog {
         etNote = root.findViewById(R.id.pipe_note);
         btnOK = root.findViewById(R.id.btn_ok);
         btnCancel = root.findViewById(R.id.btn_cancel);
+    }
+
+    public void setContentValue(PipeLine pipeLine) {
+        if (pipeLine == null) {
+            Log.d(TAG, "PipeLine is null");
+            return;
+        }
+
+        startId.setText("起点点号:" + pipeLine.startID);
+        endId.setText("终点点号:" + pipeLine.endID);
+        startDepth.setText(pipeLine.firstDepth + "");
+        endDepth.setText(pipeLine.endDepth + "");
+        etSection.setText(pipeLine.section);
+        etAmount.setText(pipeLine.amount + "");
+        etHoleUse.setText(pipeLine.holeUse + "");
+        etMatero.setText(pipeLine.matero);
+        etNum.setText(pipeLine.pipeNum);
+        etPressure.setText(pipeLine.pressure);
+        etBtime.setText(pipeLine.bTime);
+        etUser.setText(pipeLine.pipeUser);
+        etRoad.setText(pipeLine.road);
+        etSpecies.setText(pipeLine.species);
+        etNote.setText(pipeLine.note);
     }
 
     public int getLineColor() {
@@ -214,10 +240,6 @@ public class MarkLineDialog extends BaseDialog {
             btnCancel.setOnClickListener(listener);
         }
         return this;
-    }
-
-    public void setContentValue(){
-
     }
 
 

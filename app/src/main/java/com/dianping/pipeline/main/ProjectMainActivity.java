@@ -162,8 +162,9 @@ public class ProjectMainActivity extends BaseActivity {
         @Override
         public boolean onPolylineClick(Polyline polyline) {
             Bundle bundle = polyline.getExtraInfo();
-            String polylineName = bundle.getString("polylineID");
+            final String polylineName = bundle.getString("polylineID");
             PiplineConstant.POLYLINE_EVENT_TYPE type = polyline_event_type;
+            final PipeLine pipeLine = getPipeLineWithPolylineName(polylineName);
             switch (type) {
                 case LINE_DELETE:
                     try {
@@ -180,6 +181,7 @@ public class ProjectMainActivity extends BaseActivity {
                     markLineDialog.setCancelable(true)
                             .setdismissListeren(null)
                             .show();
+                    markLineDialog.setContentValue(pipeLine);
                     markLineDialog.setCancelClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -188,7 +190,33 @@ public class ProjectMainActivity extends BaseActivity {
                     }).setOKClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
+                            try {
+                                pipeLine.name = polylineName;
+                                pipeLine.pipeType = getLineType();
+                                pipeLine.firstDepth = markLineDialog.getStartDepth();
+                                pipeLine.endDepth = markLineDialog.getEndDepth();
+                                pipeLine.section = markLineDialog.getPipSection();
+                                pipeLine.amount = markLineDialog.getPipHoleCount();
+                                pipeLine.holeUse = markLineDialog.getPipHoleUse();
+                                pipeLine.pipeUser = markLineDialog.getPipUser();
+                                pipeLine.matero = markLineDialog.getPipMatero();
+                                pipeLine.pipeNum = markLineDialog.getPipNum();
+                                pipeLine.material = markLineDialog.getPipMaterial();
+                                pipeLine.pressure = markLineDialog.getPipPressure();
+                                pipeLine.flow = markLineDialog.getPipFlow();
+                                pipeLine.embed = markLineDialog.getPipEmbed();
+                                pipeLine.bTime = markLineDialog.getPipTime();
+                                pipeLine.road = markLineDialog.getPipRoad();
+                                pipeLine.species = markLineDialog.getPipSpecies();
+                                pipeLine.note = markLineDialog.getPipNote();
+                                mPipelineDBHelper.updateLine(createContentValueWithPipeLine(pipeLine), pipeLine.name);
+                                mLines.add(pipeLine);
+                                if (markLineDialog != null) {
+                                    markLineDialog.dismiss();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                     break;
@@ -347,15 +375,15 @@ public class ProjectMainActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 getMapPointsFromDB();
                 if (mPoints != null && mPoints.size() > 0) {
                     renderPointsFromDB(mBaiduMap, mPoints);
                 }
 
-                //初始化当前线表中的线
-                List<MapLine> mapLines = getMapLinesFromDB(mPoints);
-                if (mapLines != null && mapLines.size() > 0) {
-                    renderLinesFromDB(mBaiduMap, mapLines);
+                getMapLinesFromDB(mPoints);
+                if (mLines != null && mLines.size() > 0) {
+                    renderLinesFromDB(mBaiduMap, mLines);
                 }
             }
         });
@@ -669,14 +697,51 @@ public class ProjectMainActivity extends BaseActivity {
         return values;
     }
 
-    private PipePoint getPipePointWithMarkername(String name) {
-        if (!TextUtils.isEmpty(name)) {
+    private ContentValues createContentValueWithPipeLine(PipeLine line) {
+        ContentValues values = new ContentValues();
+        values.put("name", line.name);
+        values.put("startid", line.startID);
+        values.put("endid", line.endID);
+        values.put("pipetype", line.pipeType);
+        values.put("startdepth", line.firstDepth);
+        values.put("enddepth", line.endDepth);
+        values.put("pipesize", line.section);
+        values.put("amount", line.amount);
+        values.put("holeuse", line.holeUse);
+        values.put("matero", line.matero);
+        values.put("pipenum", line.pipeNum);
+        values.put("material", line.material);
+        values.put("pressure", line.pressure);
+        values.put("flow", line.flow);
+        values.put("enbed", line.embed);
+        values.put("btime", line.bTime);
+        values.put("pipeuser", line.pipeUser);
+        values.put("road", line.road);
+        values.put("species", line.species);
+        values.put("note", line.note);
+        return values;
+    }
+
+    private PipePoint getPipePointWithMarkername(String markerName) {
+        if (!TextUtils.isEmpty(markerName)) {
             for (PipePoint p : mPoints) {
-                if (name.equals(p.name)) {
+                if (markerName.equals(p.name)) {
                     return p;
                 }
             }
         }
+        return null;
+    }
+
+    private PipeLine getPipeLineWithPolylineName(String polylineName) {
+        if (!TextUtils.isEmpty(polylineName)) {
+            for (PipeLine line : mLines) {
+                if (polylineName.equals(line.name)) {
+                    return line;
+                }
+            }
+        }
+
         return null;
     }
 
@@ -716,32 +781,54 @@ public class ProjectMainActivity extends BaseActivity {
         }
     }
 
-    public List<MapLine> getMapLinesFromDB(List<PipePoint> points) {
+    public List<PipeLine> getMapLinesFromDB(List<PipePoint> points) {
         if (points.size() == 0) {
             Toast.makeText(this, "未发现任何有效管点", Toast.LENGTH_SHORT).show();
             return null;
         }
 
-        List<MapLine> lines = new ArrayList<>();
         if (mPipelineDBHelper != null) {
+            if (mLines != null) {
+                mLines.clear();
+            }
+
             Cursor cursor = mPipelineDBHelper.queryLine();
             if (cursor.getCount() == 0) {
                 return null;
             }
+
             while (cursor.moveToNext()) {
-                String name = cursor.getString(cursor.getColumnIndex("name"));
-                String start_id = cursor.getString(cursor.getColumnIndex("startid"));
-                String end_id = cursor.getString(cursor.getColumnIndex("endid"));
-                String type = cursor.getString(cursor.getColumnIndex("pipetype"));
-                int color = PipelineMap.getPipelineColor(PipelineMap.getPipelineTypeIndex(PipelineMap.getPipelineCategory(type)));
-                PipePoint pt1 = getPipePointWithMarkername(start_id);
-                PipePoint pt2 = getPipePointWithMarkername(end_id);
-                MapLine l = new MapLine(pt1, pt2, color, name);
-                lines.add(l);
+                PipeLine l = new PipeLine();
+                l.name = cursor.getString(cursor.getColumnIndex("name"));
+                l.startID = cursor.getString(cursor.getColumnIndex("startid"));
+                l.endID = cursor.getString(cursor.getColumnIndex("endid"));
+                l.pipeType = cursor.getString(cursor.getColumnIndex("pipetype"));
+                l.firstDepth = cursor.getDouble(cursor.getColumnIndex("startdepth"));
+                l.endDepth = cursor.getDouble(cursor.getColumnIndex("enddepth"));
+                l.section = cursor.getString(cursor.getColumnIndex("pipesize"));
+                l.amount = cursor.getInt(cursor.getColumnIndex("amount"));
+                l.holeUse = cursor.getInt(cursor.getColumnIndex("holeuse"));
+                l.matero = cursor.getString(cursor.getColumnIndex("matero"));
+                l.pipeNum = cursor.getString(cursor.getColumnIndex("pipenum"));
+                l.material = cursor.getString(cursor.getColumnIndex("material"));
+                l.pressure = cursor.getString(cursor.getColumnIndex("pressure"));
+                l.flow = cursor.getString(cursor.getColumnIndex("flow"));
+                l.embed = cursor.getString(cursor.getColumnIndex("enbed"));
+                l.bTime = cursor.getString(cursor.getColumnIndex("btime"));
+                l.pipeUser = cursor.getString(cursor.getColumnIndex("pipeuser"));
+                l.road = cursor.getString(cursor.getColumnIndex("road"));
+                l.species = cursor.getString(cursor.getColumnIndex("species"));
+                l.note = cursor.getString(cursor.getColumnIndex("note"));
+
+                l.color = PipelineMap.getPipelineColor(PipelineMap.getPipelineTypeIndex(PipelineMap.getPipelineCategory(l.pipeType)));
+                l.startPoint = getPipePointWithMarkername(l.startID);
+                l.endPoint = getPipePointWithMarkername(l.endID);
+
+                mLines.add(l);
             }
             cursor.close();
         }
-        return lines;
+        return mLines;
     }
 
     public List<PipePoint> getMapPointsFromDB() {
@@ -818,11 +905,11 @@ public class ProjectMainActivity extends BaseActivity {
         }
     }
 
-    private void renderLinesFromDB(BaiduMap baiduMap, List<MapLine> lines) {
+    private void renderLinesFromDB(BaiduMap baiduMap, List<PipeLine> lines) {
         if (baiduMap == null || lines.size() == 0) {
             return;
         }
-        for (MapLine line : lines) {
+        for (PipeLine line : lines) {
             if (line == null || line.startPoint == null || line.endPoint == null) {
                 continue;
             }
@@ -872,7 +959,6 @@ public class ProjectMainActivity extends BaseActivity {
     private void drawPointOnBitmap(final LatLng point) {
         final int categoryIndex = getLintTypeIndex();
         final String categoryPrefix = PipelineMap.getPointPrefex(categoryIndex);
-        //show dialog
         final MarkPointDialog markPointDialog = new MarkPointDialog(this);
         markPointDialog.setCancelable(true)
                 .setdismissListeren(null)
@@ -1211,17 +1297,17 @@ public class ProjectMainActivity extends BaseActivity {
         }
     }
 
-    class MapLine {
-        public PipePoint startPoint;
-        public PipePoint endPoint;
-        public int color;
-        public String name;
-
-        public MapLine(PipePoint pt1, PipePoint pt2, int c, String _name) {
-            startPoint = pt1;
-            endPoint = pt2;
-            color = c;
-            name = _name;
-        }
-    }
+//    class MapLine {
+//        public PipePoint startPoint;
+//        public PipePoint endPoint;
+//        public int color;
+//        public String name;
+//
+//        public MapLine(PipePoint pt1, PipePoint pt2, int c, String _name) {
+//            startPoint = pt1;
+//            endPoint = pt2;
+//            color = c;
+//            name = _name;
+//        }
+//    }
 }

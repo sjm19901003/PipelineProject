@@ -210,19 +210,19 @@ public class PipelineDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void updateLine(ContentValues values, int id) throws Exception {
+    public void updateLine(ContentValues values, String name) throws Exception {
         if (values == null) {
             throw new Exception("ContentValues object is null");
         }
-        if (id < 0) {
-            throw new Exception("id must not be zero(0).");
+        if (TextUtils.isEmpty(name)) {
+            throw new Exception("name must not be zero(0) or null.");
         }
 
         if (mDatabase == null) {
             mDatabase = getWritableDatabase();
         }
 
-        mDatabase.update(LINE_TABLE_NAME, values, "_id=?", new String[]{String.valueOf(id)});
+        mDatabase.update(LINE_TABLE_NAME, values, "name=?", new String[]{name});
     }
 
     //查询数据线表
